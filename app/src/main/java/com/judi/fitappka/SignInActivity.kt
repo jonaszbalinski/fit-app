@@ -4,27 +4,29 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import com.judi.fitappka.databinding.ActivitySignInBinding
 import extensions.Extensions.toast
-/** fix missing imports **/
-import kotlinx.android.synthetic.main.activity_sign_in.*
 import utils.FirebaseUtils.firebaseAuth
 
 class SignInActivity : AppCompatActivity() {
-    lateinit var signInEmail: String
-    lateinit var signInPassword: String
-    lateinit var signInInputsArray: Array<EditText>
+    private lateinit var signInEmail: String
+    private lateinit var signInPassword: String
+    private lateinit var signInInputsArray: Array<EditText>
+
+    private  lateinit var binding: ActivitySignInBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_in)
+        binding = ActivitySignInBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        signInInputsArray = arrayOf(etSignInEmail, etSignInPassword)
-        btnCreateAccount2.setOnClickListener {
+        signInInputsArray = arrayOf(binding.etSignInEmail, binding.etSignInPassword)
+        binding.btnCreateAccount2.setOnClickListener {
             startActivity(Intent(this, CreateAccountActivity::class.java))
             finish()
         }
 
-        btnSignIn.setOnClickListener {
+        binding.btnSignIn.setOnClickListener {
             signInUser()
         }
     }
@@ -32,24 +34,25 @@ class SignInActivity : AppCompatActivity() {
     private fun notEmpty(): Boolean = signInEmail.isNotEmpty() && signInPassword.isNotEmpty()
 
     private fun signInUser() {
-        signInEmail = etSignInEmail.text.toString().trim()
-        signInPassword = etSignInPassword.text.toString().trim()
+        signInEmail = binding.etSignInEmail.text.toString().trim()
+        signInPassword = binding.etSignInPassword.text.toString().trim()
 
         if (notEmpty()) {
             firebaseAuth.signInWithEmailAndPassword(signInEmail, signInPassword)
                 .addOnCompleteListener { signIn ->
                     if (signIn.isSuccessful) {
                         startActivity(Intent(this, MainActivity::class.java))
-                        toast("signed in successfully")
+                        toast(getString(R.string.logged_in))
                         finish()
                     } else {
-                        toast("sign in failed")
+                        toast(getString(R.string.error_occurred))
                     }
                 }
         } else {
             signInInputsArray.forEach { input ->
                 if (input.text.toString().trim().isEmpty()) {
-                    input.error = "${input.hint} is required"
+                    input.error = getString(R.string.field_is_required,
+                        input.hint.toString().lowercase())
                 }
             }
         }

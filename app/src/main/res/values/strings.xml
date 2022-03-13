@@ -1,12 +1,19 @@
 <resources>
     <string name="app_name">FitAppka</string>
-    <string name="create_account">Create account</string>
+    <string name="create_account">Utwórz konto</string>
     <string name="email">E-mail</string>
-    <string name="password">Password</string>
-    <string name="confirm_password">Confirm password</string>
-    <string name="or">or</string>
-    <string name="sign_in">Sign in</string>
-    <string name="you_are_signed_in">You are signed in</string>
-    <string name="sign_out">Sign out</string>
+    <string name="password">Hasło</string>
+    <string name="confirm_password">Potwierdź hasło</string>
+    <string name="or">lub</string>
+    <string name="sign_in">Zaloguj się</string>
+    <string name="you_are_signed_in">Jesteś zalogowany</string>
+    <string name="sign_out">Wyloguj się</string>
+    <string name="error_occurred">Wystąpił błąd</string>
+    <string name="logged_in">Zalogowano</string>
+    <string name="logged_out">Wylogowano</string>
+    <string name="field_is_required">Pole <b>%s</b> jest wymagane</string>
+    <string name="passwords_are_different">Podane hasła są różne</string>
+    <string name="created_account">Utworzono konto</string>
+    <string name="mail_sent_to">Wysłano e-mail na adres: <i>%s</i></string>
 
 </resources>
