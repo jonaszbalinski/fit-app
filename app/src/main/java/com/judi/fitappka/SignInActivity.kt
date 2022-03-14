@@ -13,7 +13,7 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var signInPassword: String
     private lateinit var signInInputsArray: Array<EditText>
 
-    private  lateinit var binding: ActivitySignInBinding
+    private lateinit var binding: ActivitySignInBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +48,8 @@ class SignInActivity : AppCompatActivity() {
                         toast(getString(R.string.error_occurred))
                     }
                 }
-        } else {
+        }
+        else {
             signInInputsArray.forEach { input ->
                 if (input.text.toString().trim().isEmpty()) {
                     input.error = getString(R.string.field_is_required,

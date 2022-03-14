@@ -24,7 +24,7 @@ class CreateAccountActivity : AppCompatActivity() {
 
         createAccountInputsArray = arrayOf(binding.etEmail, binding.etPassword, binding.etConfirmPassword)
         binding.btnCreateAccount.setOnClickListener {
-            signIn()
+            createAccount()
         }
 
         binding.btnSignIn2.setOnClickListener {
@@ -48,33 +48,33 @@ class CreateAccountActivity : AppCompatActivity() {
     private fun identicalPassword(): Boolean {
         var identical = false
         if (notEmpty() &&
-            binding.etPassword.text.toString().trim() == binding.etConfirmPassword.text.toString().trim()
-        ) {
+            binding.etPassword.text.toString().trim() ==
+            binding.etConfirmPassword.text.toString().trim()) {
             identical = true
-        } else if (!notEmpty()) {
+        }
+        else if (!notEmpty()) {
             createAccountInputsArray.forEach { input ->
                 if (input.text.toString().trim().isEmpty()) {
                     input.error = getString(R.string.field_is_required,
                         input.hint.toString().lowercase())
                 }
             }
-        } else {
+        }
+        else {
             toast(getString(R.string.passwords_are_different))
         }
         return identical
     }
 
-    private fun signIn() {
+    private fun createAccount() {
         if (identicalPassword()) {
-            // identicalPassword() returns true only  when inputs are not empty and passwords are identical
             userEmail = binding.etEmail.text.toString().trim()
             userPassword = binding.etPassword.text.toString().trim()
 
-            /*create a user*/
             firebaseAuth.createUserWithEmailAndPassword(userEmail, userPassword)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        toast(getString(R.string.created_account))
+                        //toast(getString(R.string.created_account))
                         sendEmailVerification()
                         startActivity(Intent(this, MainActivity::class.java))
                         finish()
@@ -91,6 +91,7 @@ class CreateAccountActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     toast(getString(R.string.mail_sent_to, userEmail))
                 }
+
             }
         }
     }
