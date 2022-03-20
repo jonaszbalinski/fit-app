@@ -21,24 +21,28 @@ class DatabaseTestActivity : AppCompatActivity() {
         binding = ActivityDatabaseTestBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        var Reference =  FirebaseDatabase.getInstance().getReference("Exercises")
+
+        Reference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                val nazwaCwiczenia  = dataSnapshot.child("MusclePart1").child("Exercise1").child("Name")
+                binding.textExerciseName.setText(nazwaCwiczenia.getValue().toString())
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException())
+            }
+        })
+
 
         binding.buttonWriteToDatabase.setOnClickListener{
 
-            val textToDatabase = ""
-            val database = FirebaseDatabase.getInstance().getReference("testParent").child("Name")
+            val database = FirebaseDatabase.getInstance().getReference("Exercises").child("MusclePart1").child("Exercise1").child("Name")
             val name = binding.textWriteToDatabase.text.toString()
             database.setValue(name)
-        }
-
-
-        binding.buttonGetFromDatabase.setOnClickListener{
-
-            database = FirebaseDatabase.getInstance().getReference("testParent")
-
-            database.child("Name").get().addOnSuccessListener {
-                val name = it.value
-                binding.textDatabaseReadText.setText(name.toString())
-            }
         }
     }
 }
