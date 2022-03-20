@@ -3,6 +3,8 @@ package com.judi.fitappka
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.judi.fitappka.databinding.ActivityMainBinding
 import extensions.Extensions.toast
 import utils.FirebaseUtils.firebaseAuth
@@ -21,5 +23,12 @@ class MainActivity : AppCompatActivity() {
             toast(getString(R.string.logged_out))
             finish()
         }
+
+        binding.btnDatabaseTestActivity.setOnClickListener{
+            startActivity(Intent(this,DatabaseTestActivity::class.java))
+            //finish()
+        }
+
+
     }
 }
