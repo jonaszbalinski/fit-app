@@ -1,15 +1,13 @@
 package com.judi.fitappka
 
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-import com.judi.fitappka.databinding.ActivityCreateAccountBinding
+import com.google.firebase.database.DatabaseReference
 import com.judi.fitappka.databinding.ActivityDatabaseTestBinding
-import extensions.Extensions.toast
 
 
 class DatabaseTestActivity : AppCompatActivity() {
@@ -21,14 +19,20 @@ class DatabaseTestActivity : AppCompatActivity() {
         binding = ActivityDatabaseTestBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        var Reference =  FirebaseDatabase.getInstance().getReference("Exercises")
+        binding.buttonBackToSignIn.setOnClickListener {
+            startActivity(Intent(this, SignInActivity::class.java))
+            finish()
+        }
 
-        Reference.addValueEventListener(object : ValueEventListener {
+        val reference =  FirebaseDatabase.getInstance().getReference("Exercises")
+
+        reference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                val nazwaCwiczenia  = dataSnapshot.child("MusclePart1").child("Exercise1").child("Name")
-                binding.textExerciseName.setText(nazwaCwiczenia.getValue().toString())
+                val exerciseName  = dataSnapshot.child("MusclePart1")
+                    .child("Exercise1").child("Name")
+                binding.textExerciseName.text = exerciseName.value.toString()
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -37,10 +41,9 @@ class DatabaseTestActivity : AppCompatActivity() {
             }
         })
 
-
         binding.buttonWriteToDatabase.setOnClickListener{
-
-            val database = FirebaseDatabase.getInstance().getReference("Exercises").child("MusclePart1").child("Exercise1").child("Name")
+            val database = FirebaseDatabase.getInstance().getReference("Exercises")
+                .child("MusclePart1").child("Exercise1").child("Name")
             val name = binding.textWriteToDatabase.text.toString()
             database.setValue(name)
         }

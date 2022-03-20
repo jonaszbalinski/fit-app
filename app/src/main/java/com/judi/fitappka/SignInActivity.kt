@@ -56,6 +56,11 @@ class SignInActivity : AppCompatActivity() {
             signInGoogleUser()
         }
 
+        binding.buttonDatabaseTest.setOnClickListener {
+            startActivity(Intent(this, DatabaseTestActivity::class.java))
+            finish()
+        }
+
         for (i in 0 until binding.buttonGoogleSignIn.childCount) {
             val v: View = binding.buttonGoogleSignIn.getChildAt(i)
             if (v is TextView) {
@@ -102,9 +107,6 @@ class SignInActivity : AppCompatActivity() {
         val account = GoogleSignIn.getLastSignedInAccount(this)
         if (account != null){
             toast("Get last logged-in Google account!")
-        }
-        else {
-            toast("No Google account logged-in")
         }
     }
 
