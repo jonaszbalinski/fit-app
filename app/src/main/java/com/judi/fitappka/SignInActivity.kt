@@ -34,7 +34,7 @@ class SignInActivity : AppCompatActivity() {
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
@@ -42,13 +42,13 @@ class SignInActivity : AppCompatActivity() {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         auth = Firebase.auth
 
-        signInInputsArray = arrayOf(binding.etSignInEmail, binding.etSignInPassword)
-        binding.btnCreateAccount2.setOnClickListener {
+        signInInputsArray = arrayOf(binding.etEmail2, binding.etPassword2)
+        binding.buttonGotoCreateAccount.setOnClickListener {
             startActivity(Intent(this, CreateAccountActivity::class.java))
             finish()
         }
 
-        binding.btnSignIn.setOnClickListener {
+        binding.buttonSignIn.setOnClickListener {
             signInEmailUser()
         }
 
@@ -90,6 +90,8 @@ class SignInActivity : AppCompatActivity() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     toast("signInWithCredential:success")
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
                 } else {
                     toast("signInWithCredential:failure")
                     // val view = binding.mainLayout
@@ -113,8 +115,8 @@ class SignInActivity : AppCompatActivity() {
     private fun notEmpty(): Boolean = signInEmail.isNotEmpty() && signInPassword.isNotEmpty()
 
     private fun signInEmailUser() {
-        signInEmail = binding.etSignInEmail.text.toString().trim()
-        signInPassword = binding.etSignInPassword.text.toString().trim()
+        signInEmail = binding.etEmail2.text.toString().trim()
+        signInPassword = binding.etPassword2.text.toString().trim()
 
         if (notEmpty()) {
             firebaseAuth.signInWithEmailAndPassword(signInEmail, signInPassword)

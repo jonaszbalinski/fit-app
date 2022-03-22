@@ -17,5 +17,5 @@
     <string name="created_account">Utworzono konto</string>
     <string name="mail_sent_to">Wysłano e-mail na adres: <i>%s</i></string>
     <string name="test_database">Testowa baza danych</string>
-
+    <string name="error_connecting_to_db">Wystąpił błąd: %s</string>
 </resources>

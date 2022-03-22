@@ -26,11 +26,11 @@ class CreateAccountActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         createAccountInputsArray = arrayOf(binding.etEmail, binding.etPassword, binding.etConfirmPassword)
-        binding.btnCreateAccount.setOnClickListener {
+        binding.buttonCreateAccount.setOnClickListener {
             createAccount()
         }
 
-        binding.btnSignIn2.setOnClickListener {
+        binding.buttonGotoSignIn.setOnClickListener {
             startActivity(Intent(this, SignInActivity::class.java))
             finish()
         }

@@ -12,13 +12,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <activity
-            android:name=".SignInActivity"
-            android:exported="true">
+            android:name=".ExerciseDatabaseActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-               <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SignInActivity"
+            android:exported="true"/>
+
         <activity
             android:name=".CreateAccountActivity"
             android:exported="false" />
@@ -31,8 +35,7 @@
         </activity>
         <activity
             android:name=".DatabaseTestActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
     </application>
 
 </manifest>

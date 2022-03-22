@@ -8,6 +8,7 @@
     tools:ignore="Autofill, LabelFor">
 
     <TextView
+        android:id="@+id/tvSignIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sign_in"
@@ -15,26 +16,26 @@
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/etSignInEmail"
+        app:layout_constraintBottom_toTopOf="@+id/etEmail2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/tvOr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/or"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnCreateAccount2"
+        app:layout_constraintBottom_toTopOf="@+id/buttonGotoCreateAccount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSignIn" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonSignIn" />
 
     <EditText
-        android:id="@+id/etSignInEmail"
+        android:id="@+id/etEmail2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
@@ -42,14 +43,14 @@
         android:hint="@string/email"
         android:inputType="textEmailAddress"
         android:padding="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/etSignInPassword"
+        app:layout_constraintBottom_toTopOf="@+id/etPassword2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <EditText
-        android:id="@+id/etSignInPassword"
+        android:id="@+id/etPassword2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginVertical="20dp"
@@ -57,35 +58,35 @@
         android:inputType="textPassword"
         android:maxLength="8"
         android:padding="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnSignIn"
-        app:layout_constraintEnd_toEndOf="@+id/etSignInEmail"
-        app:layout_constraintStart_toStartOf="@+id/etSignInEmail"
-        app:layout_constraintTop_toBottomOf="@+id/etSignInEmail" />
+        app:layout_constraintBottom_toTopOf="@+id/buttonSignIn"
+        app:layout_constraintEnd_toEndOf="@+id/etEmail2"
+        app:layout_constraintStart_toStartOf="@+id/etEmail2"
+        app:layout_constraintTop_toBottomOf="@+id/etEmail2" />
 
     <Button
-        android:id="@+id/btnSignIn"
+        android:id="@+id/buttonSignIn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginVertical="20dp"
         android:backgroundTint="@color/black"
         android:text="@string/sign_in"
-        app:layout_constraintBottom_toTopOf="@+id/btnCreateAccount2"
-        app:layout_constraintEnd_toEndOf="@+id/etSignInPassword"
+        app:layout_constraintBottom_toTopOf="@+id/buttonGotoCreateAccount"
+        app:layout_constraintEnd_toEndOf="@+id/etPassword2"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/etSignInPassword"
-        app:layout_constraintTop_toBottomOf="@+id/etSignInPassword" />
+        app:layout_constraintStart_toStartOf="@+id/etPassword2"
+        app:layout_constraintTop_toBottomOf="@+id/etPassword2" />
 
     <Button
-        android:id="@+id/btnCreateAccount2"
+        android:id="@+id/buttonGotoCreateAccount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginVertical="20dp"
         android:text="@string/create_account"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/btnSignIn"
+        app:layout_constraintEnd_toEndOf="@+id/buttonSignIn"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/btnSignIn"
-        app:layout_constraintTop_toBottomOf="@+id/btnSignIn" />
+        app:layout_constraintStart_toStartOf="@+id/buttonSignIn"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSignIn" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/buttonGoogleSignIn"
@@ -98,7 +99,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCreateAccount2"
+        app:layout_constraintTop_toBottomOf="@+id/buttonGotoCreateAccount"
         app:layout_constraintVertical_bias="0.151" />
 
     <Button
