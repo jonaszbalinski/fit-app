@@ -30,10 +30,8 @@
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:background="#DAB8B8"
         android:backgroundTint="#3A3A3A"
         android:orientation="vertical"
@@ -41,6 +39,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/calendarView">
+
+        <Button
+            android:id="@+id/buttonAddExercise"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="@string/add_exercise" />
 
         <HorizontalScrollView
             android:id="@+id/scrollViewButtons"
@@ -65,6 +71,51 @@
                 android:orientation="vertical" />
         </ScrollView>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutAddExercise"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp"
+        android:background="#FFFFFF"
+        android:backgroundTint="#2B2B2E"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textViewAddExercise"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/add_exercise"
+            android:textAlignment="center"
+            android:textSize="24sp" />
+
+        <Spinner
+            android:id="@+id/spinnerListOfExercises"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp" />
+
+        <LinearLayout
+            android:id="@+id/linearLayoutAddExerciseInfo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical"></LinearLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

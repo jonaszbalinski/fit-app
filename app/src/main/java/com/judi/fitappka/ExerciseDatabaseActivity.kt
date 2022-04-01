@@ -1,20 +1,14 @@
 package com.judi.fitappka
 
-import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
-import android.widget.Button
-import android.widget.CalendarView.OnDateChangeListener
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
-import androidx.core.view.isEmpty
 import com.google.firebase.database.*
 import com.judi.fitappka.databinding.ActivityExerciseDatabaseBinding
 import extensions.Extensions.toast
-import org.w3c.dom.Text
 
 
 class ExerciseDatabaseActivity : AppCompatActivity() {
@@ -30,6 +24,10 @@ class ExerciseDatabaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityExerciseDatabaseBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.linearLayoutAddExercise.visibility = View.GONE
+        val activityContext = this
+
 
         exerciseTemplateReference = FirebaseDatabase.getInstance()
             .getReference("Test/TestExercises") //should be "exercise templates" in db
@@ -76,8 +74,67 @@ class ExerciseDatabaseActivity : AppCompatActivity() {
             }.addOnFailureListener {
                 toast("Error during receiving data")
             }
-
         }
+
+        binding.buttonAddExercise.setOnClickListener {
+            if(selectedDate != "") {
+                binding.linearLayoutAddExercise.visibility = View.VISIBLE
+                val nameListAdapter = ArrayAdapter<String>(this,
+                    android.R.layout.simple_spinner_dropdown_item)
+                for (exerciseTemplate in exerciseTemplateSet) {
+                    nameListAdapter.add(exerciseTemplate.name)
+                }
+                binding.spinnerListOfExercises.adapter = nameListAdapter
+            }
+        }
+
+        binding.spinnerListOfExercises.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View, id: Int, pos: Long) {
+                    val name = parent?.getItemAtPosition(pos.toInt()) ?: return
+                    for (exerciseTemplate in exerciseTemplateSet) {
+                        if (name == exerciseTemplate.name) {
+                            binding.linearLayoutAddExerciseInfo.removeAllViews()
+
+                            if(exerciseTemplate.containsSeries) {
+                                addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
+                                    getString(R.string.series), "", true)
+                            }
+                            if(exerciseTemplate.containsReps) {
+                                addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
+                                    getString(R.string.reps), "", true)
+                            }
+                            if(exerciseTemplate.containsWeight) {
+                                addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
+                                    getString(R.string.weight), "", true)
+                            }
+                            if(exerciseTemplate.containsDistance) {
+                                addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
+                                    getString(R.string.distance), "", true)
+                            }
+                            if(exerciseTemplate.containsDuration) {
+                                addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
+                                    getString(R.string.duration), "", true)
+                            }
+
+                            val buttonAdd = Button(activityContext)
+                            buttonAdd.text = getString(R.string.add_exercise)
+                            buttonAdd.setOnClickListener {
+                                ///
+                                /// here add values from edittext, id from exerciseTemplate and date
+                                /// from selectedDate to create a new exercise in database
+                                ///
+                            }
+
+                            binding.linearLayoutAddExerciseInfo.addView(buttonAdd)
+                        }
+                    }
+                }
+
+                override fun onNothingSelected(arg0: AdapterView<*>?) {
+
+                }
+            }
     }
 
     private fun updateExerciseList(snapshot: DataSnapshot) {
@@ -108,6 +165,9 @@ class ExerciseDatabaseActivity : AppCompatActivity() {
         for (exercise in exerciseDataSet) {
             val button = Button(this)
             button.text = exercise.id.toString()
+            button.setOnClickListener {
+                openExerciseInfo(exercise)
+            }
             ll.addView(button)
             openExerciseInfo(exercise)
         }
@@ -162,18 +222,25 @@ class ExerciseDatabaseActivity : AppCompatActivity() {
         ll.addView(horizontalLL)
     }
 
-    private fun addPropertyInfoToExercise(parent: LinearLayout, propertyName: String, value: String) {
+    private fun addPropertyInfoToExercise(parent: LinearLayout, propertyName: String,
+                                          value: String, editable: Boolean = false) {
         val horizontalLL = LinearLayout(this)
 
         horizontalLL.orientation = LinearLayout.HORIZONTAL
         val propertyTextView = TextView(this)
-        propertyTextView.text = propertyName
-
-        val valueTextView = TextView(this)
-        valueTextView.text = value
-
+        propertyTextView.text = ("$propertyName    ")
         horizontalLL.addView(propertyTextView)
-        horizontalLL.addView(valueTextView)
+
+        if (editable) {
+            val valueTextView = EditText(this)
+            horizontalLL.addView(valueTextView)
+        }
+        else {
+            val valueTextView = TextView(this)
+            valueTextView.text = ("$value    ")
+            horizontalLL.addView(valueTextView)
+        }
+
         parent.addView(horizontalLL)
     }
 }
