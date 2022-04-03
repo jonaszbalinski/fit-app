@@ -95,25 +95,36 @@ class ExerciseDatabaseActivity : AppCompatActivity() {
                     for (exerciseTemplate in exerciseTemplateSet) {
                         if (name == exerciseTemplate.name) {
                             binding.linearLayoutAddExerciseInfo.removeAllViews()
+                            val exerciseValuesInfo = hashMapOf<String, Any>()
+                            var seriesEditText: EditText? = null
+                            var repsEditText: EditText? = null
+                            var weightEditText: EditText? = null
+                            var distanceEditText: EditText? = null
+                            var durationEditText: EditText? = null
 
                             if(exerciseTemplate.containsSeries) {
-                                addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
+                                seriesEditText =
+                                    addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
                                     getString(R.string.series), "", true)
                             }
                             if(exerciseTemplate.containsReps) {
-                                addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
+                                repsEditText =
+                                    addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
                                     getString(R.string.reps), "", true)
                             }
                             if(exerciseTemplate.containsWeight) {
-                                addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
+                                weightEditText =
+                                    addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
                                     getString(R.string.weight), "", true)
                             }
                             if(exerciseTemplate.containsDistance) {
-                                addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
+                                distanceEditText =
+                                    addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
                                     getString(R.string.distance), "", true)
                             }
                             if(exerciseTemplate.containsDuration) {
-                                addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
+                                durationEditText =
+                                    addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
                                     getString(R.string.duration), "", true)
                             }
 
@@ -124,6 +135,31 @@ class ExerciseDatabaseActivity : AppCompatActivity() {
                                 /// here add values from edittext, id from exerciseTemplate and date
                                 /// from selectedDate to create a new exercise in database
                                 ///
+
+                                // TODO: value validation
+                                if(seriesEditText != null) {
+                                    exerciseValuesInfo["series"] = seriesEditText.text.toString().toInt()
+                                }
+                                if(repsEditText != null) {
+                                    exerciseValuesInfo["reps"] = repsEditText.text.toString().toInt()
+                                }
+                                if(weightEditText != null) {
+                                    exerciseValuesInfo["weight"] = weightEditText.text.toString().toFloat()
+                                }
+                                if(distanceEditText != null) {
+                                    exerciseValuesInfo["distance"] = distanceEditText.text.toString().toFloat()
+                                }
+                                if(durationEditText != null) {
+                                    exerciseValuesInfo["duration"] = durationEditText.text.toString().toFloat()
+                                }
+
+                                val exerciseIdInfo = hashMapOf<String, Any>(
+                                    exerciseTemplate.id.toString() to exerciseValuesInfo
+                                )
+
+                                exerciseDataReference.child(selectedDate).updateChildren(exerciseIdInfo)
+
+                                binding.linearLayoutAddExercise.visibility = View.GONE
                             }
 
                             binding.linearLayoutAddExerciseInfo.addView(buttonAdd)
@@ -223,7 +259,7 @@ class ExerciseDatabaseActivity : AppCompatActivity() {
     }
 
     private fun addPropertyInfoToExercise(parent: LinearLayout, propertyName: String,
-                                          value: String, editable: Boolean = false) {
+                                          value: String, editable: Boolean = false): EditText? {
         val horizontalLL = LinearLayout(this)
 
         horizontalLL.orientation = LinearLayout.HORIZONTAL
@@ -234,13 +270,16 @@ class ExerciseDatabaseActivity : AppCompatActivity() {
         if (editable) {
             val valueTextView = EditText(this)
             horizontalLL.addView(valueTextView)
+            parent.addView(horizontalLL)
+
+            return valueTextView
         }
         else {
             val valueTextView = TextView(this)
             valueTextView.text = ("$value    ")
             horizontalLL.addView(valueTextView)
+            parent.addView(horizontalLL)
         }
-
-        parent.addView(horizontalLL)
+        return null
     }
 }
