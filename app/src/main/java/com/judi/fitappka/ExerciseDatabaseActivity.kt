@@ -249,6 +249,9 @@ class ExerciseDatabaseActivity : AppCompatActivity() {
 
         val buttonDelete = Button(this)
         buttonDelete.text = getString(R.string.delete_exercise)
+        buttonDelete.setOnClickListener {
+            exerciseDataReference.child(selectedDate).child(exercise.id.toString()).removeValue()
+        }
 
         val buttonEdit = Button(this)
         buttonEdit.text = getString(R.string.edit_exercise)
