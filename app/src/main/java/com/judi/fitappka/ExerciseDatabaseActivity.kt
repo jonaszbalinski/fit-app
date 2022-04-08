@@ -137,20 +137,47 @@ class ExerciseDatabaseActivity : AppCompatActivity() {
                                 ///
 
                                 // TODO: value validation
+
                                 if(seriesEditText != null) {
+
+                                    val s = seriesEditText.text.toString().toIntOrNull();
+
+                                    if(s != null)
                                     exerciseValuesInfo["series"] = seriesEditText.text.toString().toInt()
+                                    else
+                                        exerciseValuesInfo["series"] = -1
                                 }
                                 if(repsEditText != null) {
-                                    exerciseValuesInfo["reps"] = repsEditText.text.toString().toInt()
+                                    val s = repsEditText.text.toString().toIntOrNull();
+
+                                    if(s != null)
+                                        exerciseValuesInfo["series"] = repsEditText.text.toString().toInt()
+                                    else
+                                        exerciseValuesInfo["series"] = -1
                                 }
                                 if(weightEditText != null) {
-                                    exerciseValuesInfo["weight"] = weightEditText.text.toString().toFloat()
+                                    val s = weightEditText.text.toString().toFloatOrNull();
+
+                                    if(s != null)
+                                        exerciseValuesInfo["series"] = weightEditText.text.toString().toInt()
+                                    else
+                                        exerciseValuesInfo["series"] = -1
                                 }
                                 if(distanceEditText != null) {
-                                    exerciseValuesInfo["distance"] = distanceEditText.text.toString().toFloat()
+                                    val s = distanceEditText.text.toString().toFloatOrNull();
+
+                                    if(s != null)
+                                        exerciseValuesInfo["series"] = distanceEditText.text.toString().toInt()
+                                    else
+                                        exerciseValuesInfo["series"] = -1
                                 }
                                 if(durationEditText != null) {
-                                    exerciseValuesInfo["duration"] = durationEditText.text.toString().toFloat()
+                                    val s = durationEditText.text.toString().toFloatOrNull();
+
+                                    if(s != null)
+                                        exerciseValuesInfo["series"] = durationEditText.text.toString().toInt()
+                                    else
+                                        exerciseValuesInfo["series"] = -1
                                 }
 
                                 val exerciseIdInfo = hashMapOf<String, Any>(

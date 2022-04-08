@@ -82,7 +82,7 @@ class CreateExerciseActivity : AppCompatActivity(){
                     }
 
                 })
-                Tu Nie działaaaaaaa
+                //Tu Nie działaaaaaaa
                 val newExercise = chosenMusclePart.child(nextEx)
                 newExercise.updateChildren(exerciseProperties)
             }
