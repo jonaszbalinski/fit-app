@@ -40,6 +40,7 @@ class ExerciseDatabaseActivity : AppCompatActivity() {
                 for (musclePart in dataSnapshot.children) {
                     val musclePartName = musclePart.key
                     for (exercise in musclePart.children) {
+                        if(exercise.key.toString() == "nextId") continue
                         val newExercise = ExerciseTemplate(-1, "", "")
                         if(newExercise.createFromJSONData(exercise, musclePartName)) {
                             exerciseTemplateSet.add(newExercise)
@@ -79,6 +80,7 @@ class ExerciseDatabaseActivity : AppCompatActivity() {
         binding.buttonAddExercise.setOnClickListener {
             if(selectedDate != "") {
                 binding.linearLayoutAddExercise.visibility = View.VISIBLE
+
                 val nameListAdapter = ArrayAdapter<String>(this,
                     android.R.layout.simple_spinner_dropdown_item)
                 for (exerciseTemplate in exerciseTemplateSet) {
