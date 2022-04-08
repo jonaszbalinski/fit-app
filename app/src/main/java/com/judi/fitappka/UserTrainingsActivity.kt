@@ -14,6 +14,7 @@ class UserTrainingsActivity : AppCompatActivity() {
     private lateinit var trainingsDataReference: DatabaseReference
     var exerciseTemplateSet: MutableSet<ExerciseTemplate> = mutableSetOf()
     var trainingsDataSet: MutableSet<Exercise> = mutableSetOf()
+    var trainingsNextId = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +31,7 @@ class UserTrainingsActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 exerciseTemplateSet.clear()
                 for (musclePart in dataSnapshot.children) {
-                    val musclePartName = musclePart.key
+                    val musclePartName = musclePart.key.toString()
                     for (exercise in musclePart.children) {
                         if(exercise.key.toString() == "nextId") continue
                         val newExercise = ExerciseTemplate(-1, "", "")
@@ -57,6 +58,26 @@ class UserTrainingsActivity : AppCompatActivity() {
     }
 
     fun updateTrainingList(snapshot: DataSnapshot) {
-
+        trainingsDataSet.clear()
+        for (training in snapshot.children) {
+            if(training.toString() == "nextId") {
+                trainingsNextId = training.value.toString().toInt()
+            }
+            else {
+                val trainingId = training.toString().toInt()
+                val newTraining = Training(trainingId)
+                for (musclePart in training.children) {
+                    val musclePartName = musclePart.toString()
+                    for (exercise in musclePart.children) {
+                        val exerciseId = exercise.key.toString().toInt()
+                        val newExercise = Exercise(-1, "", "")
+                        newExercise.createFromJSONData(exercise, exerciseId, musclePartName,
+                            exerciseTemplateSet)
+                        newTraining.addExercise(newExercise)
+                    }
+                }
+            }
+        }
+        //updateExerciseView()
     }
 }

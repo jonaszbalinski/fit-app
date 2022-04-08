@@ -31,15 +31,16 @@ class Exercise(var id: Int, var musclePart: String, var name: String,
         return toReturn
     }
 
-    fun createFromJSONData(dataSnapshot: DataSnapshot,
+    fun createFromJSONData(dataSnapshot: DataSnapshot, newID: Int, inputMusclePart: String,
                            exerciseTemplateSet: MutableSet<ExerciseTemplate>) : Boolean {
-        val newID = dataSnapshot.key.toString().toInt()
+        id = newID
+        musclePart = inputMusclePart
         var isInSet = false
+
         for(exerciseTemplate in exerciseTemplateSet) {
-            if(newID == exerciseTemplate.id) {
+            if(id == exerciseTemplate.id && musclePart == exerciseTemplate.musclePart) {
                 isInSet = true
                 id = exerciseTemplate.id
-                musclePart = exerciseTemplate.musclePart
                 name = exerciseTemplate.name
                 copyExerciseInfo(exerciseTemplate)
 
