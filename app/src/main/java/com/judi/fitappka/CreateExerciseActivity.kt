@@ -1,6 +1,7 @@
 package com.judi.fitappka
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.*
@@ -14,7 +15,7 @@ class CreateExerciseActivity : AppCompatActivity(){
 
     private lateinit var exerciseMusclePartsReference: DatabaseReference
     private lateinit var binding: ActivityCreateExerciseBinding
-    private lateinit var nextEx: String
+    val hashMapOfNames = hashMapOf<String,Any>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +43,9 @@ class CreateExerciseActivity : AppCompatActivity(){
 
         binding.buttonCreateExercise.setOnClickListener{
 
-            if(binding.editTextExerciseName.text.toString()!=""){
+
+
+           if(binding.editTextExerciseName.text.toString()!=""){
                 val exerciseProperties = hashMapOf<String,Any>()
                 if(binding.switchDistance.isChecked){
                     exerciseProperties.put("distance",true)
@@ -64,27 +67,9 @@ class CreateExerciseActivity : AppCompatActivity(){
 
                 }
                 exerciseProperties.put("name",binding.editTextExerciseName.text.toString())
-                val chosenMusclePart = exerciseMusclePartsReference.child(binding.spinnerMusclePartList.selectedItem.toString())
-                val ex: MutableList<String> = mutableListOf()
-                chosenMusclePart.addValueEventListener(object: ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        for (Exercise in dataSnapshot.children) {
-                            ex.add(Exercise.key.toString())
-                        }
-                        val substr = ex.last().substring(2,ex.last().length)
-                        val next = substr.toInt()+1
-                        nextEx = "Ex"+next.toString()
 
+               saveData(binding.spinnerMusclePartList.selectedItem.toString(),exerciseProperties)
 
-                    }
-                    override fun onCancelled(error: DatabaseError) {
-                        toast(getString(R.string.error_connecting_to_db, error.toString()))
-                    }
-
-                })
-
-                val newExercise = chosenMusclePart.child(nextEx)
-                newExercise.updateChildren(exerciseProperties)
             }
             else{
                 toast("Uzupełniej nazwę ćwiczenia")
@@ -97,5 +82,22 @@ class CreateExerciseActivity : AppCompatActivity(){
 
 
     }
+
+    private fun saveData(musclePartName: String, hashMap: HashMap<String,Any>){
+        exerciseMusclePartsReference = FirebaseDatabase.getInstance()
+            .getReference("Test/TestExercises/$musclePartName")
+
+
+        exerciseMusclePartsReference.get().addOnSuccessListener {
+            var nextExId = it.child("nextId").value.toString().toInt()
+            exerciseMusclePartsReference.child(nextExId.toString()).updateChildren(hashMap)
+            nextExId+=1
+            exerciseMusclePartsReference.child("nextId").setValue(nextExId)
+        }.addOnFailureListener{
+            Log.e("firebase", "Error getting data", it)
+        }
+    }
+
+
 
 }
