@@ -22,6 +22,8 @@
     <string name="delete_exercise">Usuń ćwiczenie</string>
     <string name="edit_exercise">Edytuj ćwiczenie</string>
     <string name="add_exercise">Dodaj ćwiczenie</string>
+    <string name="next_training">Następny trening</string>
+    <string name="prev_training">Poprzedni trening</string>
 
     <!-- Exercises properties -->
     <string name="reps">Powtórzenia: </string>

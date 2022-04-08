@@ -13,8 +13,8 @@ open class ExerciseTemplate(var id: Int,
     private var unknownData: MutableMap<String?, String> = mutableMapOf()
     private var unknownDataIterator = 0
 
-    fun createFromJSONData(dataSnapshot: DataSnapshot, musclePartBranch: String? = null): Boolean {
-        musclePart = musclePartBranch ?: "???"
+    fun createFromJSONData(dataSnapshot: DataSnapshot, musclePartBranch: String): Boolean {
+        musclePart = musclePartBranch
 
         id = dataSnapshot.key.toString().toInt()
 

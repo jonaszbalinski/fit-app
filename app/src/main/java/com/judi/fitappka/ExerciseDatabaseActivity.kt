@@ -38,7 +38,7 @@ class ExerciseDatabaseActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 exerciseTemplateSet.clear()
                 for (musclePart in dataSnapshot.children) {
-                    val musclePartName = musclePart.key
+                    val musclePartName = musclePart.key.toString()
                     for (exercise in musclePart.children) {
                         if(exercise.key.toString() == "nextId") continue
                         val newExercise = ExerciseTemplate(-1, "", "")
@@ -209,7 +209,8 @@ class ExerciseDatabaseActivity : AppCompatActivity() {
             if(dateInString == selectedDate){
                 for (exercise in date.children) {
                     val newExercise = Exercise(-1, "", "")
-                    if(newExercise.createFromJSONData(exercise, exerciseTemplateSet)){
+                    if(newExercise.createFromJSONData(exercise, 0,
+                            "?", exerciseTemplateSet)){
                         exerciseDataSet.add(newExercise)
                     }
                 }
