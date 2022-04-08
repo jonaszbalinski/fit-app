@@ -16,9 +16,10 @@ open class ExerciseTemplate(var id: Int,
     fun createFromJSONData(dataSnapshot: DataSnapshot, musclePartBranch: String? = null): Boolean {
         musclePart = musclePartBranch ?: "???"
 
+        id = dataSnapshot.key.toString().toInt()
+
         for (property in dataSnapshot.children) {
             when (property.key) {
-                "id" -> id = property.value.toString().toInt()
                 "name" -> name = property.value.toString()
                 "reps" -> containsReps = true
                 "series" -> containsSeries = true
