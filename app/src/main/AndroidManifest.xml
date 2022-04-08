@@ -12,11 +12,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <activity
+            android:name=".EditExerciseActivity"
+            android:exported="true" />
+        <activity
             android:name=".UserTrainingsActivity"
             android:exported="false" />
         <activity
             android:name=".ExerciseDatabaseActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".SignInActivity"
             android:exported="true" />
