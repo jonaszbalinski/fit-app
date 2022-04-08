@@ -12,13 +12,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <activity
+            android:name=".UserTrainingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ExerciseDatabaseActivity"
-            android:exported="true" >
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".SignInActivity"
-            android:exported="true"/>
-
+            android:exported="true" />
         <activity
             android:name=".CreateAccountActivity"
             android:exported="false" />
@@ -35,12 +36,12 @@
         <activity
             android:name=".CreateExerciseActivity"
             android:exported="true">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-        </activity>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
