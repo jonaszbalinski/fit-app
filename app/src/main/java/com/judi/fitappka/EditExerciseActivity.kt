@@ -32,7 +32,7 @@ class EditExerciseActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 exerciseTemplateSet.clear()
                 for (musclePart in dataSnapshot.children) {
-                    val musclePartName = musclePart.key
+                    val musclePartName = musclePart.key.toString()
                     for (exercise in musclePart.children) {
                         if(exercise.key.toString() == "nextId") continue
                         val newExercise = ExerciseTemplate(-1, "", "")

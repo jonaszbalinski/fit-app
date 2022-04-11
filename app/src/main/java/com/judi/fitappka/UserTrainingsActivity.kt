@@ -5,10 +5,8 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.view.Gravity
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.Space
-import android.widget.TextView
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.marginBottom
 import com.google.firebase.database.*
@@ -24,11 +22,15 @@ class UserTrainingsActivity : AppCompatActivity() {
     var exerciseTemplateSet: MutableSet<ExerciseTemplate> = mutableSetOf()
     var trainingsDataSet: MutableSet<Training> = mutableSetOf()
     var trainingsNextId = -1
+    var currentVisibleTrainingId = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityUserTrainingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        showAddExerciseMenu(false)
+        val activityContext = this
 
         exerciseTemplateReference = FirebaseDatabase.getInstance()
             .getReference("Test/TestExercises") //should be "exercise templates" in db
@@ -66,6 +68,148 @@ class UserTrainingsActivity : AppCompatActivity() {
                 toast(getString(R.string.error_connecting_to_db, error.toString()))
             }
         })
+
+        binding.buttonNextTraining.setOnClickListener {
+            if(currentVisibleTrainingId >= trainingsDataSet.size) {
+                currentVisibleTrainingId = 1
+            }
+            else {
+                currentVisibleTrainingId += 1
+            }
+            updateTrainingView(currentVisibleTrainingId)
+        }
+
+        binding.buttonPrevTraining.setOnClickListener {
+            if (currentVisibleTrainingId <= 1) {
+                currentVisibleTrainingId = trainingsDataSet.size
+            }
+            else {
+                currentVisibleTrainingId -= 1
+            }
+            updateTrainingView(currentVisibleTrainingId)
+        }
+
+        binding.spinnerListOfExercises.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View, id: Int, pos: Long) {
+                    val name = parent?.getItemAtPosition(pos.toInt()) ?: return
+                    for (exerciseTemplate in exerciseTemplateSet) {
+                        if (name == exerciseTemplate.name) {
+                            binding.linearLayoutAddExerciseInfo.removeAllViews()
+                            val exerciseValuesInfo = hashMapOf<String, Any>()
+                            var seriesEditText: EditText? = null
+                            var repsEditText: EditText? = null
+                            var weightEditText: EditText? = null
+                            var distanceEditText: EditText? = null
+                            var durationEditText: EditText? = null
+
+                            if(exerciseTemplate.containsSeries) {
+                                seriesEditText =
+                                    addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
+                                        getString(R.string.series), "", true)
+                            }
+                            if(exerciseTemplate.containsReps) {
+                                repsEditText =
+                                    addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
+                                        getString(R.string.reps), "", true)
+                            }
+                            if(exerciseTemplate.containsWeight) {
+                                weightEditText =
+                                    addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
+                                        getString(R.string.weight), "", true)
+                            }
+                            if(exerciseTemplate.containsDistance) {
+                                distanceEditText =
+                                    addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
+                                        getString(R.string.distance), "", true)
+                            }
+                            if(exerciseTemplate.containsDuration) {
+                                durationEditText =
+                                    addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
+                                        getString(R.string.duration), "", true)
+                            }
+
+                            val buttonAdd = Button(activityContext)
+                            buttonAdd.text = getString(R.string.add_exercise)
+                            buttonAdd.setOnClickListener {
+                                if(seriesEditText != null) {
+
+                                    val s = seriesEditText.text.toString().toIntOrNull();
+
+                                    if(s != null)
+                                        exerciseValuesInfo["series"] = seriesEditText.text.toString().toInt()
+                                    else
+                                        exerciseValuesInfo["series"] = -1
+                                }
+                                if(repsEditText != null) {
+                                    val s = repsEditText.text.toString().toIntOrNull();
+
+                                    if(s != null)
+                                        exerciseValuesInfo["series"] = repsEditText.text.toString().toInt()
+                                    else
+                                        exerciseValuesInfo["series"] = -1
+                                }
+                                if(weightEditText != null) {
+                                    val s = weightEditText.text.toString().toFloatOrNull();
+
+                                    if(s != null)
+                                        exerciseValuesInfo["series"] = weightEditText.text.toString().toInt()
+                                    else
+                                        exerciseValuesInfo["series"] = -1
+                                }
+                                if(distanceEditText != null) {
+                                    val s = distanceEditText.text.toString().toFloatOrNull();
+
+                                    if(s != null)
+                                        exerciseValuesInfo["series"] = distanceEditText.text.toString().toInt()
+                                    else
+                                        exerciseValuesInfo["series"] = -1
+                                }
+                                if(durationEditText != null) {
+                                    val s = durationEditText.text.toString().toFloatOrNull();
+
+                                    if(s != null)
+                                        exerciseValuesInfo["series"] = durationEditText.text.toString().toInt()
+                                    else
+                                        exerciseValuesInfo["series"] = -1
+                                }
+
+                                val exerciseIdInfo = hashMapOf<String, Any>(
+                                    exerciseTemplate.id.toString() to exerciseValuesInfo
+                                )
+
+                                trainingsDataReference.child(currentVisibleTrainingId.toString())
+                                    .child(exerciseTemplate.musclePart).updateChildren(exerciseIdInfo)
+
+                                showAddExerciseMenu(false)
+                            }
+
+                            binding.linearLayoutAddExerciseInfo.addView(buttonAdd)
+                        }
+                    }
+                }
+
+                override fun onNothingSelected(arg0: AdapterView<*>?) {
+
+                }
+            }
+    }
+
+    private fun showAddExerciseMenu(shouldBeVisible: Boolean) {
+        if(shouldBeVisible) {
+            binding.linearLayoutAddExercise.visibility = View.VISIBLE
+            binding.buttonNextTraining.visibility = View.GONE
+            binding.buttonPrevTraining.visibility = View.GONE
+            binding.scrollViewExerciseList.visibility = View.GONE
+            binding.buttonAddTraining.visibility = View.GONE
+        }
+        else {
+            binding.linearLayoutAddExercise.visibility = View.GONE
+            binding.buttonNextTraining.visibility = View.VISIBLE
+            binding.buttonPrevTraining.visibility = View.VISIBLE
+            binding.scrollViewExerciseList.visibility = View.VISIBLE
+            binding.buttonAddTraining.visibility = View.VISIBLE
+        }
     }
 
     fun updateTrainingList(snapshot: DataSnapshot) {
@@ -94,7 +238,7 @@ class UserTrainingsActivity : AppCompatActivity() {
                 trainingsDataSet.add(newTraining)
             }
         }
-        updateTrainingView()
+        updateTrainingView(currentVisibleTrainingId)
     }
 
     private fun updateTrainingView(trainingId: Int = 1) {
@@ -108,6 +252,18 @@ class UserTrainingsActivity : AppCompatActivity() {
                 for(exercise in training.exerciseList) {
                     addExerciseToView(trainingId, exercise, binding.linearLayoutExerciseList)
                 }
+                val addExerciseButton = Button(this)
+                addExerciseButton.text = "Dodaj ćwiczenie"
+                addExerciseButton.setOnClickListener {
+                    showAddExerciseMenu(true)
+                    val nameListAdapter = ArrayAdapter<String>(this,
+                        android.R.layout.simple_spinner_dropdown_item)
+                    for (exerciseTemplate in exerciseTemplateSet) {
+                        nameListAdapter.add(exerciseTemplate.name)
+                    }
+                    binding.spinnerListOfExercises.adapter = nameListAdapter
+                }
+                binding.linearLayoutExerciseList.addView(addExerciseButton)
             }
         }
     }
@@ -191,5 +347,30 @@ class UserTrainingsActivity : AppCompatActivity() {
         hl.addView(valueTV)
 
         linearLayout.addView(hl)
+    }
+
+    private fun addPropertyInfoToExercise(parent: LinearLayout, propertyName: String,
+                                          value: String, editable: Boolean = false): EditText? {
+        val horizontalLL = LinearLayout(this)
+
+        horizontalLL.orientation = LinearLayout.HORIZONTAL
+        val propertyTextView = TextView(this)
+        propertyTextView.text = ("$propertyName    ")
+        horizontalLL.addView(propertyTextView)
+
+        if (editable) {
+            val valueTextView = EditText(this)
+            horizontalLL.addView(valueTextView)
+            parent.addView(horizontalLL)
+
+            return valueTextView
+        }
+        else {
+            val valueTextView = TextView(this)
+            valueTextView.text = ("$value    ")
+            horizontalLL.addView(valueTextView)
+            parent.addView(horizontalLL)
+        }
+        return null
     }
 }
