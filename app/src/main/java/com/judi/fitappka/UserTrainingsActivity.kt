@@ -89,6 +89,29 @@ class UserTrainingsActivity : AppCompatActivity() {
             updateTrainingView(currentVisibleTrainingId)
         }
 
+        binding.buttonAddTraining.setOnClickListener {
+            val TOCHANGEselectedDate = "25042022"
+            val hashMapToUpdate = hashMapOf(
+                "date" to TOCHANGEselectedDate
+            )
+            val secondHashMap = hashMapOf<String, Any>(
+                trainingsNextId.toString() to hashMapToUpdate
+            )
+            trainingsDataReference.updateChildren(secondHashMap)
+            currentVisibleTrainingId = trainingsNextId
+            trainingsNextId += 1
+            trainingsDataReference.child("nextId").setValue(trainingsNextId)
+
+            showAddExerciseMenu(true)
+            val nameListAdapter = ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item)
+            for (exerciseTemplate in exerciseTemplateSet) {
+                nameListAdapter.add(exerciseTemplate.name)
+            }
+            binding.spinnerListOfExercises.adapter = nameListAdapter
+
+        }
+
         binding.spinnerListOfExercises.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View, id: Int, pos: Long) {
@@ -137,7 +160,8 @@ class UserTrainingsActivity : AppCompatActivity() {
                                     val s = seriesEditText.text.toString().toIntOrNull();
 
                                     if(s != null)
-                                        exerciseValuesInfo["series"] = seriesEditText.text.toString().toInt()
+                                        exerciseValuesInfo["series"] =
+                                            seriesEditText.text.toString().toInt()
                                     else
                                         exerciseValuesInfo["series"] = -1
                                 }
@@ -145,7 +169,8 @@ class UserTrainingsActivity : AppCompatActivity() {
                                     val s = repsEditText.text.toString().toIntOrNull();
 
                                     if(s != null)
-                                        exerciseValuesInfo["series"] = repsEditText.text.toString().toInt()
+                                        exerciseValuesInfo["series"] =
+                                            repsEditText.text.toString().toInt()
                                     else
                                         exerciseValuesInfo["series"] = -1
                                 }
@@ -153,7 +178,8 @@ class UserTrainingsActivity : AppCompatActivity() {
                                     val s = weightEditText.text.toString().toFloatOrNull();
 
                                     if(s != null)
-                                        exerciseValuesInfo["series"] = weightEditText.text.toString().toInt()
+                                        exerciseValuesInfo["series"] =
+                                            weightEditText.text.toString().toInt()
                                     else
                                         exerciseValuesInfo["series"] = -1
                                 }
@@ -161,7 +187,8 @@ class UserTrainingsActivity : AppCompatActivity() {
                                     val s = distanceEditText.text.toString().toFloatOrNull();
 
                                     if(s != null)
-                                        exerciseValuesInfo["series"] = distanceEditText.text.toString().toInt()
+                                        exerciseValuesInfo["series"] =
+                                            distanceEditText.text.toString().toInt()
                                     else
                                         exerciseValuesInfo["series"] = -1
                                 }
@@ -169,7 +196,8 @@ class UserTrainingsActivity : AppCompatActivity() {
                                     val s = durationEditText.text.toString().toFloatOrNull();
 
                                     if(s != null)
-                                        exerciseValuesInfo["series"] = durationEditText.text.toString().toInt()
+                                        exerciseValuesInfo["series"] =
+                                            durationEditText.text.toString().toInt()
                                     else
                                         exerciseValuesInfo["series"] = -1
                                 }
@@ -264,6 +292,15 @@ class UserTrainingsActivity : AppCompatActivity() {
                     binding.spinnerListOfExercises.adapter = nameListAdapter
                 }
                 binding.linearLayoutExerciseList.addView(addExerciseButton)
+
+                val deleteTrainingButton = Button(this)
+                deleteTrainingButton.text = "Usuń trening"
+                deleteTrainingButton.setOnClickListener {
+                    trainingsDataReference.child(currentVisibleTrainingId.toString()).removeValue()
+                    currentVisibleTrainingId -= 1
+                    updateTrainingView(currentVisibleTrainingId)
+                }
+                binding.linearLayoutExerciseList.addView(deleteTrainingButton)
             }
         }
     }
@@ -321,6 +358,8 @@ class UserTrainingsActivity : AppCompatActivity() {
         buttonDeleteExercise.setOnClickListener {
             trainingsDataReference.child(trainingId.toString())
                 .child(exercise.musclePart).child(exercise.id.toString()).removeValue()
+            currentVisibleTrainingId -= 1
+            updateTrainingView(currentVisibleTrainingId)
         }
         hl.addView(buttonDeleteExercise)
         ll.addView(hl)
