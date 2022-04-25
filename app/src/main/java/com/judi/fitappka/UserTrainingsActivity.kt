@@ -256,10 +256,12 @@ class UserTrainingsActivity : AppCompatActivity() {
                     val musclePartName = musclePart.key.toString()
                     for (exercise in musclePart.children) {
                         val exerciseId = exercise.key.toString().toInt()
-                        val newExercise = Exercise(-1, "", "")
-                        if(newExercise.createFromJSONData(exercise, exerciseId, musclePartName,
-                            exerciseTemplateSet)) {
-                            newTraining.addExercise(newExercise)
+                        for(series in exercise.children) {
+                            val newExercise = Exercise(-1, "", "")
+                            if(newExercise.createFromJSONData(series, exerciseId, musclePartName,
+                                    exerciseTemplateSet)) {
+                                newTraining.addExercise(newExercise)
+                            }
                         }
                     }
                 }

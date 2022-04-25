@@ -101,9 +101,6 @@ class EditExerciseActivity : AppCompatActivity() {
                             if(exercise.containsReps)
                                 binding.switchReps2.isChecked=true
 
-                            if(exercise.containsSeries)
-                                binding.switchSeries2.isChecked=true
-
                             if(exercise.containsWeight)
                                 binding.switchWeight2.isChecked=true
                         }

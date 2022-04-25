@@ -6,7 +6,6 @@ open class ExerciseTemplate(var id: Int,
                             var musclePart: String,
                             var name: String,
                             var containsReps: Boolean = false,
-                            var containsSeries: Boolean = false,
                             var containsWeight: Boolean = false,
                             var containsDistance: Boolean = false,
                             var containsDuration: Boolean = false) {
@@ -22,7 +21,6 @@ open class ExerciseTemplate(var id: Int,
             when (property.key) {
                 "name" -> name = property.value.toString()
                 "reps" -> containsReps = true
-                "series" -> containsSeries = true
                 "weight" -> containsWeight = true
                 "distance" -> containsDistance = true
                 "duration" -> containsDuration = true
