@@ -104,11 +104,6 @@ class ExerciseDatabaseActivity : AppCompatActivity() {
                             var distanceEditText: EditText? = null
                             var durationEditText: EditText? = null
 
-                            if(exerciseTemplate.containsSeries) {
-                                seriesEditText =
-                                    addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
-                                    getString(R.string.series), "", true)
-                            }
                             if(exerciseTemplate.containsReps) {
                                 repsEditText =
                                     addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
@@ -252,10 +247,6 @@ class ExerciseDatabaseActivity : AppCompatActivity() {
         ll.addView(title)
 
         // data
-        if(exercise.series != null) {
-            addPropertyInfoToExercise(ll, getString(R.string.series),
-                exercise.series.toString())
-        }
         if(exercise.reps != null) {
             addPropertyInfoToExercise(ll, getString(R.string.reps),
                 exercise.reps.toString())
