@@ -1,6 +1,5 @@
 package com.judi.fitappka
 
-import android.app.ActionBar
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -8,11 +7,9 @@ import android.view.Gravity
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.marginBottom
 import com.google.firebase.database.*
 import com.judi.fitappka.databinding.ActivityUserTrainingsBinding
 import extensions.Extensions.toast
-import kotlinx.coroutines.delay
 
 class UserTrainingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUserTrainingsBinding
@@ -126,11 +123,15 @@ class UserTrainingsActivity : AppCompatActivity() {
                             var distanceEditText: EditText? = null
                             var durationEditText: EditText? = null
 
+                            /*
                             if(exerciseTemplate.containsSeries) {
                                 seriesEditText =
                                     addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
                                         getString(R.string.series), "", true)
                             }
+                            !!!!!!!!!!!!!!!!!!!!!!! do sprawdzenia
+                            */
+
                             if(exerciseTemplate.containsReps) {
                                 repsEditText =
                                     addPropertyInfoToExercise(binding.linearLayoutAddExerciseInfo,
@@ -325,9 +326,10 @@ class UserTrainingsActivity : AppCompatActivity() {
         ll.addView(exerciseNameTV)
 
         addExerciseProperty("Partia mięśniowa:", exercise.musclePart, ll)
-        if(exercise.containsSeries) {
+        /*if(exercise.containsSeries) {
             addExerciseProperty(getString(R.string.series), exercise.series.toString(), ll)
         }
+        !!!!!!!!!!!!!!!!!!!!!! do sprawdzenia*/
         if(exercise.containsReps) {
             addExerciseProperty(getString(R.string.reps), exercise.reps.toString(), ll)
         }

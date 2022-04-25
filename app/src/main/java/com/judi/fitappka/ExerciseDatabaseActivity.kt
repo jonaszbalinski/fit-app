@@ -5,7 +5,6 @@ import android.view.Gravity
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
 import com.google.firebase.database.*
 import com.judi.fitappka.databinding.ActivityExerciseDatabaseBinding
 import extensions.Extensions.toast

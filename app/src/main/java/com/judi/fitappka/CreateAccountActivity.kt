@@ -5,9 +5,6 @@ import android.os.Bundle
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.judi.fitappka.databinding.ActivityCreateAccountBinding
 import extensions.Extensions.toast
 import utils.FirebaseUtils.firebaseAuth

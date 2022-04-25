@@ -3,11 +3,8 @@ package com.judi.fitappka
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
-import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
 import com.google.firebase.database.*
 import com.judi.fitappka.databinding.ActivityCreateExerciseBinding
 import extensions.Extensions.toast

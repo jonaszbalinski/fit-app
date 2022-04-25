@@ -3,7 +3,7 @@ package com.judi.fitappka
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.google.firebase.database.ktx.database
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.judi.fitappka.databinding.ActivityMainBinding
 import extensions.Extensions.toast
@@ -40,5 +40,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this,UserTrainingsActivity::class.java))
             finish()
         }
+
+        /*
+            val user = Firebase.auth.currentUser?.uid
+        Dostań UID
+         */
     }
 }

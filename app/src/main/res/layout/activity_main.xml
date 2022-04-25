@@ -46,4 +46,5 @@
         android:text="Przegląd treningów"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonEditExerciseMain" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
