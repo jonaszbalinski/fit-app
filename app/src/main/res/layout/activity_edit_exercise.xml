@@ -129,5 +129,14 @@
         android:layout_marginStart="32dp"
         android:text="Wybierz partię mięśniową"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="43dp" />
+        tools:layout_editor_absoluteY="52dp" />
+
+    <Button
+        android:id="@+id/buttonBackEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:text="Ekran główny"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

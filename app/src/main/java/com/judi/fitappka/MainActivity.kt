@@ -24,11 +24,21 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.btnDatabaseTestActivity.setOnClickListener{
-            startActivity(Intent(this,DatabaseTestActivity::class.java))
-            //finish()
+
+
+        binding.buttonCreateExerciseMain.setOnClickListener{
+            startActivity(Intent(this,CreateExerciseActivity::class.java))
+            finish()
         }
 
+        binding.buttonEditExerciseMain.setOnClickListener{
+            startActivity(Intent(this,EditExerciseActivity::class.java))
+            finish()
+        }
 
+        binding.ButtonTreningiMain.setOnClickListener{
+            startActivity(Intent(this,UserTrainingsActivity::class.java))
+            finish()
+        }
     }
 }

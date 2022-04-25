@@ -1,5 +1,6 @@
 package com.judi.fitappka
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -21,6 +22,12 @@ class CreateExerciseActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         binding = ActivityCreateExerciseBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.buttonBackCreate.setOnClickListener{
+            startActivity(Intent(this,MainActivity::class.java))
+            finish()
+        }
+
 
         exerciseMusclePartsReference = FirebaseDatabase.getInstance()
             .getReference("Test/TestExercises")
@@ -97,7 +104,4 @@ class CreateExerciseActivity : AppCompatActivity(){
             Log.e("firebase", "Error getting data", it)
         }
     }
-
-
-
 }

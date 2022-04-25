@@ -11,6 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -56,10 +57,6 @@ class SignInActivity : AppCompatActivity() {
             signInGoogleUser()
         }
 
-        binding.buttonDatabaseTest.setOnClickListener {
-            startActivity(Intent(this, DatabaseTestActivity::class.java))
-            finish()
-        }
 
         for (i in 0 until binding.buttonGoogleSignIn.childCount) {
             val v: View = binding.buttonGoogleSignIn.getChildAt(i)
@@ -109,6 +106,11 @@ class SignInActivity : AppCompatActivity() {
         val account = GoogleSignIn.getLastSignedInAccount(this)
         if (account != null){
             toast("Get last logged-in Google account!")
+        }
+
+        val user: FirebaseUser? = firebaseAuth.currentUser
+        user?.let {
+            startActivity(Intent(this, MainActivity::class.java))
         }
     }
 

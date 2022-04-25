@@ -1,7 +1,10 @@
 package com.judi.fitappka
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
@@ -20,53 +23,55 @@ class EditExerciseActivity : AppCompatActivity() {
     var exerciseDataSet: MutableSet<Exercise> = mutableSetOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        var selectedId = 1;
+        var selectedmusclepartId = 0;
+
         super.onCreate(savedInstanceState)
         binding = ActivityEditExerciseBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.buttonBackEdit.setOnClickListener{
+            startActivity(Intent(this,MainActivity::class.java))
+            finish()
+        }
+
         exerciseTemplateReference = FirebaseDatabase.getInstance()
             .getReference("Test/TestExercises")
-
-
-        exerciseTemplateReference.addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                exerciseTemplateSet.clear()
-                for (musclePart in dataSnapshot.children) {
-                    val musclePartName = musclePart.key.toString()
-                    for (exercise in musclePart.children) {
-                        if(exercise.key.toString() == "nextId") continue
-                        val newExercise = ExerciseTemplate(-1, "", "")
-                        if(newExercise.createFromJSONData(exercise, musclePartName)) {
-                            exerciseTemplateSet.add(newExercise)
-                        }
-                    }
-                }
-            }
-            override fun onCancelled(error: DatabaseError) {
-                toast(getString(R.string.error_connecting_to_db, error.toString()))
-            }
-        })
-
-        val mainContext = this
 
         val musclePartListAdapter = ArrayAdapter<String>(this,
             android.R.layout.simple_spinner_dropdown_item)
 
         exerciseTemplateReference.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                musclePartListAdapter.clear()
+                exerciseTemplateSet.clear()
                 for (musclePart in dataSnapshot.children) {
-                    val musclePartName = musclePart.key
+                    val musclePartName = musclePart.key.toString()
                     musclePartListAdapter.add(musclePartName)
+
+                    for (exercise in musclePart.children) {
+                        if(exercise.key.toString() == "nextId") continue
+                        val newExercise = ExerciseTemplate(-1, "", "")
+                        if(newExercise.createFromJSONData(exercise, musclePartName.toString())) {
+                            exerciseTemplateSet.add(newExercise)
+                        }
+                    }
                 }
                 binding.spinnerMusclePartList2.adapter = musclePartListAdapter
+                binding.spinnerMusclePartList2.setSelection(selectedmusclepartId)
             }
             override fun onCancelled(error: DatabaseError) {
                 toast(getString(R.string.error_connecting_to_db, error.toString()))
             }
         })
+        val mainContext = this
+
         binding.spinnerMusclePartList2.onItemSelectedListener=
         object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View, id: Int, pos: Long) {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, id: Int, pos: Long) {
+
+                selectedmusclepartId = binding.spinnerMusclePartList2.selectedItemId.toInt()
 
                 val musclePartListAdapter2 = ArrayAdapter<String>(mainContext,
                     android.R.layout.simple_spinner_dropdown_item)
@@ -77,6 +82,7 @@ class EditExerciseActivity : AppCompatActivity() {
                     }
                 }
                 binding.spinnerExcerciseNameListEdit.adapter = musclePartListAdapter2
+                binding.spinnerExcerciseNameListEdit.setSelection(selectedId-1)
             }
             override fun onNothingSelected(arg0: AdapterView<*>?) {
             }
@@ -84,84 +90,69 @@ class EditExerciseActivity : AppCompatActivity() {
 
         binding.spinnerExcerciseNameListEdit.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener{
-                override fun onItemSelected(parent: AdapterView<*>?, view: View, id: Int, pos: Long) {
+
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, id: Int, pos: Long) {
 
                     binding.editTextEditExerciseName.setText(binding.spinnerExcerciseNameListEdit.selectedItem.toString())
 
                     for(exercise in exerciseTemplateSet) {
 
                         if(exercise.name == binding.spinnerExcerciseNameListEdit.selectedItem.toString()){
-                            if(exercise.containsDuration)
-                                binding.switchDutarion2.isChecked=true
+                            binding.switchDutarion2.isChecked=exercise.containsDuration
 
-                            if(exercise.containsDistance)
-                                binding.switchDistance2.isChecked=true
+                            binding.switchDistance2.isChecked=exercise.containsDistance
 
+                            binding.switchReps2.isChecked = exercise.containsReps
 
-                            if(exercise.containsReps)
-                                binding.switchReps2.isChecked=true
-
-                            if(exercise.containsSeries)
-                                binding.switchSeries2.isChecked=true
-
-                            if(exercise.containsWeight)
-                                binding.switchWeight2.isChecked=true
+                            binding.switchWeight2.isChecked = exercise.containsWeight
                         }
-
                     }
-
-                    binding.buttonEditExercise.setOnClickListener{
-
-
-
-                        if(binding.editTextEditExerciseName.text.toString()!=""){
-                            val exerciseProperties = hashMapOf<String,Any>()
-                            var id=0
-                            for(exercise in exerciseTemplateSet) {
-
-                                if (exercise.name == binding.spinnerExcerciseNameListEdit.selectedItem.toString()) {
-                                    id = exercise.id
-                                }
-                            }
-
-                            if(binding.switchDistance2.isChecked){
-                                exerciseProperties.put("distance",true)
-                            }
-                            if(binding.switchWeight2.isChecked){
-                                exerciseProperties.put("weight",true)
-
-                            }
-                            if(binding.switchReps2.isChecked){
-                                exerciseProperties.put("reps",true)
-
-                            }
-                            if(binding.switchDutarion2.isChecked){
-                                exerciseProperties.put("duration",true)
-
-                            }
-                            if(binding.switchSeries2.isChecked){
-                                exerciseProperties.put("series",true)
-
-                            }
-                            exerciseProperties.put("name",binding.editTextEditExerciseName.text.toString())
-
-                            saveData(binding.spinnerMusclePartList2.selectedItem.toString(),exerciseProperties,id)
-
-                        }
-                        else{
-                            toast("Uzupełniej nazwę ćwiczenia")
-                        }
-
-                    }
-
-
-
 
 
                 }
                 override fun onNothingSelected(arg0: AdapterView<*>?) {
                 }
             }
+
+        binding.buttonEditExercise.setOnClickListener{
+            if(binding.editTextEditExerciseName.text.toString()!=""){
+                val exerciseProperties = hashMapOf<String,Any>()
+                var id: Int =0
+                for(exercise in exerciseTemplateSet) {
+
+                    if (exercise.name == binding.spinnerExcerciseNameListEdit.selectedItem.toString()) {
+                        id = exercise.id
+                        selectedId = id
+                        continue
+                    }
+                }
+
+                if(binding.switchDistance2.isChecked){
+                    exerciseProperties["distance"] = true
+                }
+                if(binding.switchWeight2.isChecked){
+                    exerciseProperties["weight"] = true
+
+                }
+                if(binding.switchReps2.isChecked){
+                    exerciseProperties["reps"] = true
+
+                }
+                if(binding.switchDutarion2.isChecked){
+                    exerciseProperties["duration"] = true
+
+                }
+
+                exerciseProperties["name"] = binding.editTextEditExerciseName.text.toString()
+
+                saveData(binding.spinnerMusclePartList2.selectedItem.toString(),exerciseProperties,id)
+
+            }
+            else{
+                toast("Uzupełniej nazwę ćwiczenia")
+            }
+
+        }
 
 
     }
@@ -172,12 +163,13 @@ class EditExerciseActivity : AppCompatActivity() {
             .getReference("Test/TestExercises/$musclePartName")
 
 
-
         exerciseTemplateReference.get().addOnSuccessListener {
+
             exerciseTemplateReference.child(nextExId.toString()).removeValue()
             exerciseTemplateReference.child(nextExId.toString()).updateChildren(hashMap)
 
-            exerciseTemplateReference.child("nextId").setValue(nextExId)
+            toast("zaktualizowano ćwiczenie!")
+
         }.addOnFailureListener{
             Log.e("firebase", "Error getting data", it)
         }
