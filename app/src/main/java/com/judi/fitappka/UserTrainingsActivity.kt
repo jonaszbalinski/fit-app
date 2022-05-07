@@ -1,5 +1,6 @@
 package com.judi.fitappka
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -33,6 +34,11 @@ class UserTrainingsActivity : AppCompatActivity() {
             .getReference("Test/TestExercises") //should be "exercise templates" in db
         trainingsDataReference = FirebaseDatabase.getInstance()
             .getReference("Test/UserData/3") //"3" should be replaced with user id
+
+        binding.buttonBackToMenu.setOnClickListener{
+            startActivity(Intent(this,MainActivity::class.java))
+            finish()
+        }
 
 
         exerciseTemplateReference.addValueEventListener(object: ValueEventListener {

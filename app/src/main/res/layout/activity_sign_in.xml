@@ -16,6 +16,7 @@
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:theme="@style/titleTextViewDefault"
         app:layout_constraintBottom_toTopOf="@+id/etEmail2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

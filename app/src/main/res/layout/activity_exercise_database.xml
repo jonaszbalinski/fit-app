@@ -97,7 +97,8 @@
             android:layout_marginBottom="20dp"
             android:text="@string/add_exercise"
             android:textAlignment="center"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:theme="@style/titleTextViewDefault" />
 
         <Spinner
             android:id="@+id/spinnerListOfExercises"
