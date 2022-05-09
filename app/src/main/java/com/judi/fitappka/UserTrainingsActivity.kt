@@ -237,6 +237,7 @@ class UserTrainingsActivity : AppCompatActivity() {
             binding.buttonPrevTraining.visibility = View.GONE
             binding.scrollViewExerciseList.visibility = View.GONE
             binding.buttonAddTraining.visibility = View.GONE
+            binding.buttonBackToMenu.visibility = View.GONE
         }
         else {
             binding.linearLayoutAddExercise.visibility = View.GONE
@@ -244,6 +245,7 @@ class UserTrainingsActivity : AppCompatActivity() {
             binding.buttonPrevTraining.visibility = View.VISIBLE
             binding.scrollViewExerciseList.visibility = View.VISIBLE
             binding.buttonAddTraining.visibility = View.VISIBLE
+            binding.buttonBackToMenu.visibility = View.VISIBLE
         }
     }
 
@@ -286,9 +288,22 @@ class UserTrainingsActivity : AppCompatActivity() {
                 binding.textViewDateOfTraining.text = formattedDate
 
                 binding.linearLayoutExerciseList.removeAllViews()
+                val dictOfExerciseGroups = hashMapOf<Int, MutableList<Exercise>>()
                 for(exercise in training.exerciseList) {
-                    addExerciseToView(trainingId, exercise, binding.linearLayoutExerciseList)
+                    if(exercise.id in dictOfExerciseGroups.keys) {
+                        dictOfExerciseGroups[exercise.id]!!.add(exercise)
+                    }
+                    else {
+                        dictOfExerciseGroups[exercise.id] = mutableListOf(exercise)
+                    }
                 }
+
+                for(exercises in dictOfExerciseGroups) {
+                    addExerciseToView(exercises.key,
+                        exercises.value, binding.linearLayoutExerciseList)
+                }
+
+
                 val addExerciseButton = Button(this)
                 addExerciseButton.text = "Dodaj ćwiczenie"
                 addExerciseButton.setOnClickListener {
@@ -314,10 +329,11 @@ class UserTrainingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun addExerciseToView(trainingId: Int, exercise: Exercise, linearLayout: LinearLayout) {
+    private fun addExerciseToView(trainingId: Int, exerciseList: List<Exercise>, linearLayout: LinearLayout) {
         val ll = LinearLayout(this)
         ll.setBackgroundColor(Color.DKGRAY)
         ll.orientation = LinearLayout.VERTICAL
+        val firstExerciseFromList = exerciseList[0]
 
         val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -325,29 +341,37 @@ class UserTrainingsActivity : AppCompatActivity() {
         ll.layoutParams = layoutParams
 
         val exerciseNameTV = TextView(this)
-        exerciseNameTV.text = exercise.name + "\n"
+        exerciseNameTV.text = firstExerciseFromList.name + "\n"
         exerciseNameTV.gravity = Gravity.CENTER
         exerciseNameTV.textSize = 20f
 
         ll.addView(exerciseNameTV)
 
-        addExerciseProperty("Partia mięśniowa:", exercise.musclePart, ll)
-        /*if(exercise.containsSeries) {
-            addExerciseProperty(getString(R.string.series), exercise.series.toString(), ll)
+        addExerciseProperty("Partia mięśniowa:", firstExerciseFromList.musclePart, ll)
+
+        var it = 1
+        for(exercise in exerciseList) {
+            val seriesTV = TextView(this)
+            seriesTV.text = "\nSeria " + it.toString() + "\n"
+            seriesTV.gravity = Gravity.CENTER
+            seriesTV.textSize = 20f
+            ll.addView(seriesTV)
+            it += 1
+
+            if(firstExerciseFromList.containsReps) {
+                addExerciseProperty(getString(R.string.reps), exercise.reps.toString(), ll)
+            }
+            if(firstExerciseFromList.containsWeight) {
+                addExerciseProperty(getString(R.string.weight), exercise.weight.toString(), ll)
+            }
+            if(firstExerciseFromList.containsDistance) {
+                addExerciseProperty(getString(R.string.distance), exercise.distance.toString(), ll)
+            }
+            if(firstExerciseFromList.containsDuration) {
+                addExerciseProperty(getString(R.string.duration), exercise.duration.toString(), ll)
+            }
         }
-        !!!!!!!!!!!!!!!!!!!!!! do sprawdzenia*/
-        if(exercise.containsReps) {
-            addExerciseProperty(getString(R.string.reps), exercise.reps.toString(), ll)
-        }
-        if(exercise.containsWeight) {
-            addExerciseProperty(getString(R.string.weight), exercise.weight.toString(), ll)
-        }
-        if(exercise.containsDistance) {
-            addExerciseProperty(getString(R.string.distance), exercise.distance.toString(), ll)
-        }
-        if(exercise.containsDuration) {
-            addExerciseProperty(getString(R.string.duration), exercise.duration.toString(), ll)
-        }
+
         val space = TextView(this)
         space.text = "\n"
         ll.addView(space)
@@ -367,7 +391,8 @@ class UserTrainingsActivity : AppCompatActivity() {
         buttonDeleteExercise.text = "Usuń ćwiczenie"
         buttonDeleteExercise.setOnClickListener {
             trainingsDataReference.child(trainingId.toString())
-                .child(exercise.musclePart).child(exercise.id.toString()).removeValue()
+                .child(firstExerciseFromList.musclePart)
+                .child(firstExerciseFromList.id.toString()).removeValue()
             currentVisibleTrainingId -= 1
             updateTrainingView(currentVisibleTrainingId)
         }
