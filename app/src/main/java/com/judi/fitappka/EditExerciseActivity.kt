@@ -16,7 +16,6 @@ import extensions.Extensions.toast
 
 class EditExerciseActivity : AppCompatActivity() {
 
-    //private lateinit var exerciseMusclePartsReference: DatabaseReference
     private lateinit var binding: ActivityEditExerciseBinding
     private lateinit var exerciseTemplateReference: DatabaseReference
     private lateinit var userReference: DatabaseReference
@@ -31,7 +30,7 @@ class EditExerciseActivity : AppCompatActivity() {
         val userUID = Firebase.auth.currentUser?.uid.toString()
 
         var selectedId = 1;
-        var selectedmusclepartId = 0;
+        var selectedMusclePartId = 0;
 
         super.onCreate(savedInstanceState)
         binding = ActivityEditExerciseBinding.inflate(layoutInflater)
@@ -84,7 +83,7 @@ class EditExerciseActivity : AppCompatActivity() {
                     }
                 }
                 binding.spinnerMusclePartList2.adapter = musclePartListAdapter
-                binding.spinnerMusclePartList2.setSelection(selectedmusclepartId)
+                binding.spinnerMusclePartList2.setSelection(selectedMusclePartId)
             }
             override fun onCancelled(error: DatabaseError) {
                 toast(getString(R.string.error_connecting_to_db, error.toString()))
@@ -97,7 +96,7 @@ class EditExerciseActivity : AppCompatActivity() {
         object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, id: Int, pos: Long) {
 
-                selectedmusclepartId = binding.spinnerMusclePartList2.selectedItemId.toInt()
+                selectedMusclePartId = binding.spinnerMusclePartList2.selectedItemId.toInt()
 
                 val musclePartListAdapter2 = ArrayAdapter<String>(mainContext,
                     android.R.layout.simple_spinner_dropdown_item)

@@ -24,11 +24,27 @@
     <string name="add_exercise">Dodaj ćwiczenie</string>
     <string name="next_training">Następny trening</string>
     <string name="prev_training">Poprzedni trening</string>
+    <string name="add_training">Dodaj trening</string>
+    <string name="delete_training">Usuń trening</string>
+
+    <!-- Muscle parts -->
+    <string name="chest">Klatka piersiowa</string>
+    <string name="arms">Ręce</string>
+    <string name="back">Plecy</string>
+    <string name="shoulders">Ramiona</string>
+    <string name="abdominals">Brzuch</string>
+    <string name="legs">Nogi</string>
 
     <!-- Exercises properties -->
-    <string name="reps">Powtórzenia: </string>
-    <string name="series">Serie: </string>
-    <string name="weight">Ciężar: </string>
-    <string name="distance">Dystans: </string>
-    <string name="duration">Czas: </string>
+    <string name="series_val">Serie: %d</string>
+    <string name="reps_val">Powtórzenia: %d</string>
+    <string name="weight_val">Ciężar: %.2f</string>
+    <string name="distance_val">Dystans: %.2f</string>
+    <string name="duration_val">Czas: %.2f</string>
+
+    <string name="series">Seria:</string>
+    <string name="reps">Powtórzenia:</string>
+    <string name="weight">Ciężar:</string>
+    <string name="distance">Dystans:</string>
+    <string name="duration">Czas:</string>
 </resources>

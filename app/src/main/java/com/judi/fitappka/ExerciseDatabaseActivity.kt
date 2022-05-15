@@ -11,6 +11,7 @@ import extensions.Extensions.toast
 
 
 class ExerciseDatabaseActivity : AppCompatActivity() {
+    /*
     private lateinit var exerciseTemplateReference: DatabaseReference
     private lateinit var exerciseDataReference: DatabaseReference
     private lateinit var binding: ActivityExerciseDatabaseBinding
@@ -304,5 +305,5 @@ class ExerciseDatabaseActivity : AppCompatActivity() {
             parent.addView(horizontalLL)
         }
         return null
-    }
+    } */
 }

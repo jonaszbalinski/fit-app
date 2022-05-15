@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="primaryTitleFontSize">16sp</dimen>
+    <dimen name="secondaryTitleFontSize">12sp</dimen>
+    <dimen name="bigFontSize">10sp</dimen>
+    <dimen name="mediumFontSize">8sp</dimen>
+    <dimen name="smallFontSize">6sp</dimen>
+</resources>
