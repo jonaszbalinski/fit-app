@@ -290,18 +290,23 @@ class UserTrainingsActivity : AppCompatActivity() {
                 val formattedDate = training.date.substring(IntRange(0, 1)) + "." + training.date
                     .substring(IntRange(2, 3)) + "." + training.date.substring(4)
                 binding.textViewDateOfTraining.text = formattedDate
+                binding.textViewDateOfTraining.textSize = resources
+                    .getDimension(R.dimen.bigFontSize)
                 binding.linearLayoutExerciseList.removeAllViews()
 
-                val musclePartLayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT)
+                val musclePartLayoutParams = LinearLayout
+                    .LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                  LinearLayout.LayoutParams.MATCH_PARENT)
                 musclePartLayoutParams.setMargins(5, 5, 5, 15)
 
-                val exerciseLayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT)
+                val exerciseLayoutParams = LinearLayout
+                    .LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                  LinearLayout.LayoutParams.MATCH_PARENT)
                 exerciseLayoutParams.setMargins(5, 5, 5, 10)
 
-                val seriesLayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT, 1f)
+                val seriesLayoutParams = LinearLayout
+                    .LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                  LinearLayout.LayoutParams.MATCH_PARENT, 1f)
                 seriesLayoutParams.setMargins(5, 5, 5, 10)
 
                 for(musclePart in training.musclePartMap.keys) {
@@ -315,8 +320,9 @@ class UserTrainingsActivity : AppCompatActivity() {
 
                     val musclePartTV = TextView(this)
                     musclePartTV.text = translateMusclePartName(musclePart)
-                    musclePartTV.textSize = resources.getDimension(R.dimen.secondaryTitleFontSize)
+                    musclePartTV.textSize = resources.getDimension(R.dimen.bigFontSize)
                     musclePartTV.gravity = Gravity.CENTER
+                    musclePartTV.setPadding(5, 10, 5, 15)
                     musclePartTV.setTextColor(resources
                         .getColor(R.color.primaryLayoutText))
                     musclePartLL.addView(musclePartTV)
@@ -335,6 +341,7 @@ class UserTrainingsActivity : AppCompatActivity() {
                         exerciseTV.setTextColor(resources.getColor(R.color.secondaryLayoutText))
                         exerciseTV.textSize = resources.getDimension(R.dimen.mediumFontSize)
                         exerciseTV.gravity = Gravity.CENTER
+                        exerciseTV.setPadding(5, 10, 5, 15)
                         exerciseLL.addView(exerciseTV)
 
                         val listOfColumns = mutableListOf(getString(R.string.series))
@@ -364,6 +371,13 @@ class UserTrainingsActivity : AppCompatActivity() {
                             addSeriesInfo(seriesLL, listOfValues, seriesLayoutParams)
                             seriesIt += 1
                         }
+
+                        val addSeriesButton = Button(this)
+                        addSeriesButton.text = getString(R.string.add_series)
+                        addSeriesButton.setOnClickListener {
+
+                        }
+                        exerciseLL.addView(addSeriesButton)
                     }
                 }
 
@@ -424,101 +438,6 @@ class UserTrainingsActivity : AppCompatActivity() {
             else -> musclePart
         }
     }
-
-    /*
-    private fun addExerciseToView(trainingId: Int, exerciseList: List<Exercise>, linearLayout: LinearLayout) {
-        val ll = LinearLayout(this)
-        ll.setBackgroundColor(Color.DKGRAY)
-        ll.orientation = LinearLayout.VERTICAL
-        val firstExerciseFromList = exerciseList[0]
-
-        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT)
-        layoutParams.setMargins(5, 5, 5, 15)
-        ll.layoutParams = layoutParams
-
-        val exerciseNameTV = TextView(this)
-        exerciseNameTV.text = firstExerciseFromList.name + "\n"
-        exerciseNameTV.gravity = Gravity.CENTER
-        exerciseNameTV.textSize = 20f
-
-        ll.addView(exerciseNameTV)
-
-        addExerciseProperty("Partia mięśniowa:", firstExerciseFromList.musclePart, ll)
-
-        var it = 1
-        for(exercise in exerciseList) {
-            val seriesTV = TextView(this)
-            seriesTV.text = "\nSeria " + it.toString() + "\n"
-            seriesTV.gravity = Gravity.CENTER
-            seriesTV.textSize = 20f
-            ll.addView(seriesTV)
-            it += 1
-
-            if(firstExerciseFromList.containsReps) {
-                addExerciseProperty(getString(R.string.reps), exercise.reps.toString(), ll)
-            }
-            if(firstExerciseFromList.containsWeight) {
-                addExerciseProperty(getString(R.string.weight), exercise.weight.toString(), ll)
-            }
-            if(firstExerciseFromList.containsDistance) {
-                addExerciseProperty(getString(R.string.distance), exercise.distance.toString(), ll)
-            }
-            if(firstExerciseFromList.containsDuration) {
-                addExerciseProperty(getString(R.string.duration), exercise.duration.toString(), ll)
-            }
-        }
-
-        val space = TextView(this)
-        space.text = "\n"
-        ll.addView(space)
-
-        val hl = LinearLayout(this)
-        hl.orientation = LinearLayout.HORIZONTAL
-        hl.gravity = Gravity.CENTER
-
-        val buttonEditExercise = Button(this)
-        buttonEditExercise.text = "Edytuj ćwiczenie"
-        buttonEditExercise.setOnClickListener {
-
-        }
-        hl.addView(buttonEditExercise)
-
-        val buttonDeleteExercise = Button(this)
-        buttonDeleteExercise.text = "Usuń ćwiczenie"
-        buttonDeleteExercise.setOnClickListener {
-            trainingsDataReference.child(trainingId.toString())
-                .child(firstExerciseFromList.musclePart)
-                .child(firstExerciseFromList.id.toString()).removeValue()
-            currentVisibleTrainingId -= 1
-            updateTrainingView(currentVisibleTrainingId)
-        }
-        hl.addView(buttonDeleteExercise)
-        ll.addView(hl)
-
-        linearLayout.addView(ll)
-    }
-
-    private fun addExerciseProperty(name: String, value: String, linearLayout: LinearLayout) {
-        val hl = LinearLayout(this)
-        hl.orientation = LinearLayout.HORIZONTAL
-        hl.gravity = Gravity.CENTER
-
-        val nameTV = TextView(this)
-        nameTV.gravity = Gravity.CENTER
-        nameTV.text = name + " "
-        nameTV.textSize = 16f
-
-        val valueTV = TextView(this)
-        valueTV.gravity = Gravity.CENTER
-        valueTV.text = value
-        valueTV.textSize = 16f
-
-        hl.addView(nameTV)
-        hl.addView(valueTV)
-
-        linearLayout.addView(hl)
-    }*/
 
     private fun addPropertyInfoToExercise(parent: LinearLayout, propertyName: String,
                                           value: String, editable: Boolean = false): EditText? {

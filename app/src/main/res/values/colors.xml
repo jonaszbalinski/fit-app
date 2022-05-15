@@ -17,9 +17,11 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
 
-    <color name="primaryLayoutBackground">#343B45</color>
-    <color name="secondaryLayoutBackground">#2F4243</color>
-    <color name="minorLayoutBackground">#484E55</color>
+    <color name="activityBackgroundColor">#00172B</color>
+
+    <color name="primaryLayoutBackground">#2E353E</color>
+    <color name="secondaryLayoutBackground">#2E343C</color>
+    <color name="minorLayoutBackground">#3B3F43</color>
 
     <color name="primaryLayoutText">#C7DEFF</color>
     <color name="secondaryLayoutText">#C1C1C1</color>

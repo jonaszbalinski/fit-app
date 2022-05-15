@@ -3,124 +3,140 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:backgroundTint="@color/activityBackgroundColor">
 
     <Button
         android:id="@+id/buttonCreateExercise"
-        android:layout_width="290dp"
-        android:layout_height="74dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="40dp"
-        android:text="Stwórz ćwiczenie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:text="@string/create_exercise"
+        android:textSize="@dimen/secondaryTitleFontSize"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchSeries" />
+        app:layout_constraintTop_toBottomOf="@+id/switchDutarion" />
 
     <EditText
         android:id="@+id/editTextExerciseName"
-        android:layout_width="291dp"
-        android:layout_height="55dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
-
-    <TextView
-        android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="76dp"
-        android:text="Nazwa ćwiczenia"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:importantForAutofill="no"
+        android:inputType="textPersonName"
+        android:textColor="@color/white"
+        android:textColorHint="#0288D1"
+        android:textSize="@dimen/primaryTitleFontSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewExerciseName" />
+
+    <TextView
+        android:id="@+id/textViewExerciseName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/name_of_exercise"
+        android:textColor="@color/white"
+        android:textSize="@dimen/primaryTitleFontSize"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView7"
+        android:id="@+id/textViewMusclePartName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="44dp"
-        android:text="Wybierz partię mięśniową"
+        android:layout_marginTop="20dp"
+        android:text="@string/choose_muscle_part"
+        android:textColor="@color/white"
+        android:textSize="@dimen/secondaryTitleFontSize"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextExerciseName" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/textViewProperties"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="40dp"
-        android:text="Wybierz sposoby pomiaru ćwiczenia"
+        android:layout_marginTop="20dp"
+        android:text="@string/choose_properties"
+        android:textColor="@color/white"
+        android:textSize="@dimen/secondaryTitleFontSize"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerMusclePartList" />
 
     <Switch
         android:id="@+id/switchDistance"
-        android:layout_width="124dp"
-        android:layout_height="31dp"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="24dp"
-        android:text="Dystans"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/distance"
+        android:textColor="@color/white"
+        android:textSize="@dimen/bigFontSize"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintTop_toBottomOf="@+id/switchWeight" />
 
     <Switch
         android:id="@+id/switchReps"
-        android:layout_width="127dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:text="Powtórzenia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:text="@string/reps"
+        android:textColor="@color/white"
+        android:textSize="@dimen/bigFontSize"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchDutarion" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewProperties" />
 
     <Switch
         android:id="@+id/switchDutarion"
-        android:layout_width="123dp"
-        android:layout_height="33dp"
-        android:layout_marginStart="19dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Czas"
+        android:text="@string/duration"
+        android:textColor="@color/white"
+        android:textSize="@dimen/bigFontSize"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/switchDistance" />
 
     <Switch
         android:id="@+id/switchWeight"
-        android:layout_width="124dp"
-        android:layout_height="22dp"
-        android:layout_marginStart="19dp"
-        android:layout_marginTop="24dp"
-        android:text="Ciężar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/weight"
+        android:textColor="@color/white"
+        android:textSize="@dimen/bigFontSize"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/switchReps" />
 
-    <Switch
-        android:id="@+id/switchSeries"
-        android:layout_width="123dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="19dp"
-        android:layout_marginTop="24dp"
-        android:text="Serie"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchWeight" />
-
     <Spinner
         android:id="@+id/spinnerMusclePartList"
-        android:layout_width="321dp"
-        android:layout_height="28dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:contentDescription="@string/choose_muscle_part"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewMusclePartName"
+        tools:ignore="DuplicateSpeakableTextCheck" />
 
     <Button
         android:id="@+id/buttonBackCreate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ekran główny"
+        android:layout_marginBottom="10dp"
+        android:text="@string/back_to_menu"
+        android:textSize="@dimen/bigFontSize"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

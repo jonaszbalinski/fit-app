@@ -66,17 +66,13 @@ class CreateExerciseActivity : AppCompatActivity(){
                     exerciseProperties.put("duration",true)
 
                 }
-                if(binding.switchSeries.isChecked){
-                    exerciseProperties.put("series",true)
-
-                }
                 exerciseProperties.put("name",binding.editTextExerciseName.text.toString())
 
                saveData(binding.spinnerMusclePartList.selectedItem.toString(),exerciseProperties)
 
             }
             else{
-                toast("Uzupełniej nazwę ćwiczenia")
+                toast("Uzupełnij nazwę ćwiczenia")
             }
 
         }

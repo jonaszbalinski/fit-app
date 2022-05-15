@@ -26,6 +26,13 @@
     <string name="prev_training">Poprzedni trening</string>
     <string name="add_training">Dodaj trening</string>
     <string name="delete_training">Usuń trening</string>
+    <string name="add_series">Dodaj serię</string>
+    <string name="loading_database">Ładowanie bazy danych...</string>
+    <string name="back_to_menu">Wróć do menu</string>
+    <string name="name_of_exercise">Nazwa ćwiczenia</string>
+    <string name="choose_muscle_part">Wybierz partię mięśniową</string>
+    <string name="choose_properties">Wybierz sposoby pomiaru ćwiczenia</string>
+    <string name="create_exercise">Stwórz ćwiczenie</string>
 
     <!-- Muscle parts -->
     <string name="chest">Klatka piersiowa</string>

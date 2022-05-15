@@ -18,9 +18,6 @@
             android:name=".UserTrainingsActivity"
             android:exported="true" />
         <activity
-            android:name=".ExerciseDatabaseActivity"
-            android:exported="true" />
-        <activity
             android:name=".SignInActivity"
             android:exported="true">
         <intent-filter>
@@ -38,9 +35,6 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".DatabaseTestActivity"
-            android:exported="true" />
         <activity
             android:name=".CreateExerciseActivity"
             android:exported="true"/>
