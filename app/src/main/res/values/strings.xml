@@ -33,6 +33,11 @@
     <string name="choose_muscle_part">Wybierz partię mięśniową</string>
     <string name="choose_properties">Wybierz sposoby pomiaru ćwiczenia</string>
     <string name="create_exercise">Stwórz ćwiczenie</string>
+    <string name="choose_exercise">Wybierz ćwiczenie</string>
+    <string name="exercise_already_reported">
+        To ćwiczenie jest już zaraportowane.\nMożna jedynie zmienić nazwę
+    </string>
+    <string name="continue_without_log_in">Kontynuuj bez logowania</string>
 
     <!-- Muscle parts -->
     <string name="chest">Klatka piersiowa</string>

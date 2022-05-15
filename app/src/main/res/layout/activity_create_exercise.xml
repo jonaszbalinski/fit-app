@@ -132,9 +132,9 @@
         android:id="@+id/buttonBackCreate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/back_to_menu"
-        android:textSize="@dimen/bigFontSize"
+        android:textSize="@dimen/secondaryTitleFontSize"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

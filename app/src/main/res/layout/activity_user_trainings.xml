@@ -28,7 +28,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginBottom="5dp"
         android:text="@string/prev_training"
-        android:textSize="@dimen/bigFontSize"
+        android:textSize="@dimen/secondaryTitleFontSize"
         app:layout_constraintBottom_toTopOf="@+id/buttonBackToMenu"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -39,7 +39,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="5dp"
         android:text="@string/next_training"
-        android:textSize="@dimen/bigFontSize"
+        android:textSize="@dimen/secondaryTitleFontSize"
         app:layout_constraintBottom_toTopOf="@+id/buttonBackToMenu"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -118,7 +118,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="@string/add_training"
-        android:textSize="@dimen/bigFontSize"
+        android:textSize="@dimen/secondaryTitleFontSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewDateOfTraining" />
@@ -127,9 +127,9 @@
         android:id="@+id/buttonBackToMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/back_to_menu"
-        android:textSize="@dimen/bigFontSize"
+        android:textSize="@dimen/secondaryTitleFontSize"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

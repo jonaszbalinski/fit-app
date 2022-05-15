@@ -57,6 +57,11 @@ class SignInActivity : AppCompatActivity() {
             signInGoogleUser()
         }
 
+        binding.buttonLoginWithoutAuth.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
+
 
         for (i in 0 until binding.buttonGoogleSignIn.childCount) {
             val v: View = binding.buttonGoogleSignIn.getChildAt(i)

@@ -10,10 +10,8 @@ import com.judi.fitappka.databinding.ActivityCreateExerciseBinding
 import extensions.Extensions.toast
 
 class CreateExerciseActivity : AppCompatActivity(){
-
     private lateinit var exerciseMusclePartsReference: DatabaseReference
     private lateinit var binding: ActivityCreateExerciseBinding
-    val hashMapOfNames = hashMapOf<String,Any>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +23,6 @@ class CreateExerciseActivity : AppCompatActivity(){
             finish()
         }
 
-
         exerciseMusclePartsReference = FirebaseDatabase.getInstance()
             .getReference("Test/TestExercises")
 
@@ -35,8 +32,8 @@ class CreateExerciseActivity : AppCompatActivity(){
         exerciseMusclePartsReference.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (musclePart in dataSnapshot.children) {
-                    val musclePartName = musclePart.key
-                    musclePartListAdapter.add(musclePartName)
+                    val musclePartName = musclePart.key.toString()
+                    musclePartListAdapter.add(decodeMusclePartName(musclePartName))
                 }
                 binding.spinnerMusclePartList.adapter = musclePartListAdapter
             }
@@ -46,47 +43,37 @@ class CreateExerciseActivity : AppCompatActivity(){
         })
 
         binding.buttonCreateExercise.setOnClickListener{
-
-
-
-           if(binding.editTextExerciseName.text.toString()!=""){
-                val exerciseProperties = hashMapOf<String,Any>()
+           if(binding.editTextExerciseName.text.toString() != ""){
+                val exerciseProperties = hashMapOf<String, Any>()
                 if(binding.switchDistance.isChecked){
-                    exerciseProperties.put("distance",true)
+                    exerciseProperties.put("distance", true)
                 }
                 if(binding.switchWeight.isChecked){
-                    exerciseProperties.put("weight",true)
+                    exerciseProperties.put("weight", true)
 
                 }
                 if(binding.switchReps.isChecked){
-                    exerciseProperties.put("reps",true)
+                    exerciseProperties.put("reps", true)
 
                 }
                 if(binding.switchDutarion.isChecked){
-                    exerciseProperties.put("duration",true)
+                    exerciseProperties.put("duration", true)
 
                 }
-                exerciseProperties.put("name",binding.editTextExerciseName.text.toString())
+                exerciseProperties.put("name", binding.editTextExerciseName.text.toString())
 
-               saveData(binding.spinnerMusclePartList.selectedItem.toString(),exerciseProperties)
-
+                saveData(encodeMusclePartName(binding.spinnerMusclePartList.selectedItem.toString()),
+                    exerciseProperties)
             }
             else{
                 toast("Uzupełnij nazwę ćwiczenia")
             }
-
         }
-
-
-
-
-
     }
 
-    private fun saveData(musclePartName: String, hashMap: HashMap<String,Any>){
+    private fun saveData(musclePartName: String, hashMap: HashMap<String, Any>){
         exerciseMusclePartsReference = FirebaseDatabase.getInstance()
             .getReference("Test/TestExercises/$musclePartName")
-
 
         exerciseMusclePartsReference.get().addOnSuccessListener {
             var nextExId = it.child("nextId").value.toString().toInt()
@@ -95,6 +82,30 @@ class CreateExerciseActivity : AppCompatActivity(){
             exerciseMusclePartsReference.child("nextId").setValue(nextExId)
         }.addOnFailureListener{
             Log.e("firebase", "Error getting data", it)
+        }
+    }
+
+    private fun decodeMusclePartName(musclePart: String): String {
+        return when (musclePart) {
+            "Chest" -> getString(R.string.chest)
+            "Back" -> getString(R.string.back)
+            "Arms" -> getString(R.string.arms)
+            "Legs" -> getString(R.string.legs)
+            "Shoulders" -> getString(R.string.shoulders)
+            "Abdominals" -> getString(R.string.abdominals)
+            else -> musclePart
+        }
+    }
+
+    private fun encodeMusclePartName(musclePart: String): String {
+        return when (musclePart) {
+            getString(R.string.chest) -> "Chest"
+            getString(R.string.back) -> "Back"
+            getString(R.string.arms) -> "Arms"
+            getString(R.string.legs) -> "Legs"
+            getString(R.string.shoulders) -> "Shoulders"
+            getString(R.string.abdominals) -> "Abdominals"
+            else -> musclePart
         }
     }
 }

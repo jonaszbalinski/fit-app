@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -291,7 +292,7 @@ class UserTrainingsActivity : AppCompatActivity() {
                     .substring(IntRange(2, 3)) + "." + training.date.substring(4)
                 binding.textViewDateOfTraining.text = formattedDate
                 binding.textViewDateOfTraining.textSize = resources
-                    .getDimension(R.dimen.bigFontSize)
+                    .getDimension(R.dimen.trainingBigFontSize)
                 binding.linearLayoutExerciseList.removeAllViews()
 
                 val musclePartLayoutParams = LinearLayout
@@ -319,8 +320,8 @@ class UserTrainingsActivity : AppCompatActivity() {
                     binding.linearLayoutExerciseList.addView(musclePartLL)
 
                     val musclePartTV = TextView(this)
-                    musclePartTV.text = translateMusclePartName(musclePart)
-                    musclePartTV.textSize = resources.getDimension(R.dimen.bigFontSize)
+                    musclePartTV.text = decodeMusclePartName(musclePart)
+                    musclePartTV.textSize = resources.getDimension(R.dimen.trainingBigFontSize)
                     musclePartTV.gravity = Gravity.CENTER
                     musclePartTV.setPadding(5, 10, 5, 15)
                     musclePartTV.setTextColor(resources
@@ -339,7 +340,7 @@ class UserTrainingsActivity : AppCompatActivity() {
                         val exerciseTV = TextView(this)
                         exerciseTV.text = exercise.name
                         exerciseTV.setTextColor(resources.getColor(R.color.secondaryLayoutText))
-                        exerciseTV.textSize = resources.getDimension(R.dimen.mediumFontSize)
+                        exerciseTV.textSize = resources.getDimension(R.dimen.trainingMediumFontSize)
                         exerciseTV.gravity = Gravity.CENTER
                         exerciseTV.setPadding(5, 10, 5, 15)
                         exerciseLL.addView(exerciseTV)
@@ -371,18 +372,29 @@ class UserTrainingsActivity : AppCompatActivity() {
                             addSeriesInfo(seriesLL, listOfValues, seriesLayoutParams)
                             seriesIt += 1
                         }
-
+                        /*
                         val addSeriesButton = Button(this)
                         addSeriesButton.text = getString(R.string.add_series)
                         addSeriesButton.setOnClickListener {
 
                         }
-                        exerciseLL.addView(addSeriesButton)
+                        exerciseLL.addView(addSeriesButton) */
                     }
                 }
+                val buttonsLayoutParams = LinearLayout
+                    .LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                exerciseLayoutParams.setMargins(5, 5, 5, 10)
 
-                val addExerciseButton = Button(this)
+                val horizontalLL = LinearLayout(this)
+                horizontalLL.orientation = LinearLayout.VERTICAL
+                horizontalLL.layoutParams = buttonsLayoutParams
+
+                val addExerciseButton = LayoutInflater.from(this)
+                    .inflate(R.layout.button, null) as Button
+                addExerciseButton.layoutParams = seriesLayoutParams
                 addExerciseButton.text = getString(R.string.add_exercise)
+                addExerciseButton.textSize = resources.getDimension(R.dimen.trainingSmallFontSize)
                 addExerciseButton.setOnClickListener {
                     showAddExerciseMenu(true)
                     val nameListAdapter = ArrayAdapter<String>(this,
@@ -392,16 +404,21 @@ class UserTrainingsActivity : AppCompatActivity() {
                     }
                     binding.spinnerListOfExercises.adapter = nameListAdapter
                 }
-                binding.linearLayoutExerciseList.addView(addExerciseButton)
+                horizontalLL.addView(addExerciseButton)
 
-                val deleteTrainingButton = Button(this)
+                val deleteTrainingButton = LayoutInflater.from(this)
+                    .inflate(R.layout.button, null) as Button
+                deleteTrainingButton.layoutParams = seriesLayoutParams
                 deleteTrainingButton.text = getString(R.string.delete_training)
+                deleteTrainingButton.textSize = resources.getDimension(R.dimen.trainingSmallFontSize)
                 deleteTrainingButton.setOnClickListener {
                     trainingsDataReference.child(currentVisibleTrainingId.toString()).removeValue()
                     currentVisibleTrainingId -= 1
                     updateTrainingView(currentVisibleTrainingId)
                 }
-                binding.linearLayoutExerciseList.addView(deleteTrainingButton)
+                horizontalLL.addView(deleteTrainingButton)
+
+                binding.linearLayoutExerciseList.addView(horizontalLL)
 
                 return
             }
@@ -418,7 +435,7 @@ class UserTrainingsActivity : AppCompatActivity() {
             val propertyTextView = TextView(this)
             propertyTextView.text = value
             propertyTextView.setTextColor(resources.getColor(R.color.minorLayoutText))
-            propertyTextView.textSize = resources.getDimension(R.dimen.smallFontSize)
+            propertyTextView.textSize = resources.getDimension(R.dimen.trainingSmallFontSize)
             propertyTextView.gravity = Gravity.CENTER
             propertyTextView.layoutParams = layoutParams
             horizontalLL.addView(propertyTextView)
@@ -427,7 +444,7 @@ class UserTrainingsActivity : AppCompatActivity() {
         parent.addView(horizontalLL)
     }
 
-    private fun translateMusclePartName(musclePart: String): String {
+    private fun decodeMusclePartName(musclePart: String): String {
         return when (musclePart) {
             "Chest" -> getString(R.string.chest)
             "Back" -> getString(R.string.back)

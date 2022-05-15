@@ -4,8 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#000000"
+    android:backgroundTint="@color/activityBackgroundColor"
     tools:context=".SignInActivity"
     tools:ignore="Autofill, LabelFor">
+
+    <TextView
+        android:id="@+id/textViewTitle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/app_name"
+        android:textColor="@color/primaryLayoutText"
+        android:textSize="@dimen/giantFontSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvSignIn"
@@ -13,14 +27,14 @@
         android:layout_height="wrap_content"
         android:text="@string/sign_in"
         android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/primaryTitleFontSize"
         android:textStyle="bold"
         android:theme="@style/titleTextViewDefault"
         app:layout_constraintBottom_toTopOf="@+id/etEmail2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewTitle2" />
 
     <TextView
         android:id="@+id/tvOr"
@@ -28,8 +42,8 @@
         android:layout_height="wrap_content"
         android:text="@string/or"
         android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/secondaryTitleFontSize"
         app:layout_constraintBottom_toTopOf="@+id/buttonGotoCreateAccount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,6 +58,9 @@
         android:hint="@string/email"
         android:inputType="textEmailAddress"
         android:padding="10dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/secondaryLayoutText"
+        android:textSize="@dimen/primaryTitleFontSize"
         app:layout_constraintBottom_toTopOf="@+id/etPassword2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,6 +76,9 @@
         android:inputType="textPassword"
         android:maxLength="8"
         android:padding="10dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/secondaryLayoutText"
+        android:textSize="@dimen/primaryTitleFontSize"
         app:layout_constraintBottom_toTopOf="@+id/buttonSignIn"
         app:layout_constraintEnd_toEndOf="@+id/etEmail2"
         app:layout_constraintStart_toStartOf="@+id/etEmail2"
@@ -71,6 +91,7 @@
         android:layout_marginVertical="20dp"
         android:backgroundTint="@color/black"
         android:text="@string/sign_in"
+        android:textSize="@dimen/primaryTitleFontSize"
         app:layout_constraintBottom_toTopOf="@+id/buttonGotoCreateAccount"
         app:layout_constraintEnd_toEndOf="@+id/etPassword2"
         app:layout_constraintHorizontal_bias="0.0"
@@ -83,6 +104,7 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="20dp"
         android:text="@string/create_account"
+        android:textSize="@dimen/primaryTitleFontSize"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/buttonSignIn"
         app:layout_constraintHorizontal_bias="1.0"
@@ -104,11 +126,11 @@
         app:layout_constraintVertical_bias="0.151" />
 
     <Button
-        android:id="@+id/buttonDatabaseTest"
+        android:id="@+id/buttonLoginWithoutAuth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:text="@string/test_database"
+        android:text="@string/continue_without_log_in"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

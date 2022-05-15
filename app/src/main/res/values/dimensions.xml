@@ -2,7 +2,12 @@
 <resources>
     <dimen name="primaryTitleFontSize">16sp</dimen>
     <dimen name="secondaryTitleFontSize">12sp</dimen>
+    <dimen name="giantFontSize">64sp</dimen>
     <dimen name="bigFontSize">10sp</dimen>
     <dimen name="mediumFontSize">8sp</dimen>
     <dimen name="smallFontSize">6sp</dimen>
+    <dimen name="trainingLargeFontSize">10sp</dimen>
+    <dimen name="trainingBigFontSize">8sp</dimen>
+    <dimen name="trainingMediumFontSize">7sp</dimen>
+    <dimen name="trainingSmallFontSize">6sp</dimen>
 </resources>

@@ -4,9 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#000000"
+    android:backgroundTint="@color/activityBackgroundColor"
     app:chainUseRtl="true"
     tools:context=".CreateAccountActivity"
     tools:ignore="Autofill">
+
+    <TextView
+        android:id="@+id/textViewTitle3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/app_name"
+        android:textColor="@color/primaryLayoutText"
+        android:textSize="@dimen/giantFontSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvCreateAccount"
@@ -14,13 +28,13 @@
         android:layout_height="wrap_content"
         android:text="@string/create_account"
         android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/primaryTitleFontSize"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/etEmail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewTitle3" />
 
     <EditText
         android:id="@+id/etEmail"
@@ -30,6 +44,9 @@
         android:hint="@string/email"
         android:inputType="textEmailAddress"
         android:padding="10dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/secondaryLayoutText"
+        android:textSize="@dimen/primaryTitleFontSize"
         app:layout_constraintBottom_toTopOf="@id/etPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,6 +62,9 @@
         android:inputType="textPassword"
         android:maxLength="8"
         android:padding="10dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/secondaryLayoutText"
+        android:textSize="@dimen/primaryTitleFontSize"
         app:layout_constraintBottom_toTopOf="@id/etConfirmPassword"
         app:layout_constraintEnd_toEndOf="@id/etEmail"
         app:layout_constraintStart_toStartOf="@id/etEmail"
@@ -59,6 +79,9 @@
         android:inputType="textPassword"
         android:maxLength="8"
         android:padding="10dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/secondaryLayoutText"
+        android:textSize="@dimen/primaryTitleFontSize"
         app:layout_constraintBottom_toTopOf="@id/buttonCreateAccount"
         app:layout_constraintEnd_toEndOf="@id/etPassword"
         app:layout_constraintStart_toStartOf="@id/etPassword"
@@ -81,7 +104,7 @@
         android:layout_height="wrap_content"
         android:text="@string/or"
         android:textAlignment="center"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/buttonGotoSignIn"
         app:layout_constraintEnd_toEndOf="parent"
