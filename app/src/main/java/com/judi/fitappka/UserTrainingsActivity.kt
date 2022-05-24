@@ -1,5 +1,6 @@
 package com.judi.fitappka
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -8,23 +9,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 import com.judi.fitappka.databinding.ActivityUserTrainingsBinding
 import extensions.Extensions.toast
-
+import extensions.OnSwipeTouchListener
 
 class UserTrainingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUserTrainingsBinding
-
     private lateinit var exerciseTemplateReference: DatabaseReference
     private lateinit var trainingsDataReference: DatabaseReference
+    private lateinit var onSwipeTouchListener: OnSwipeTouchListener
+
     var exerciseTemplateSet: MutableSet<ExerciseTemplate> = mutableSetOf()
     var trainingsDataSet: MutableSet<Training> = mutableSetOf()
     var trainingsNextId = 1
     var currentVisibleTrainingId = 1
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityUserTrainingsBinding.inflate(layoutInflater)
@@ -32,8 +36,28 @@ class UserTrainingsActivity : AppCompatActivity() {
 
         showAddExerciseMenu(false)
         val activityContext = this
-
         val userUID = Firebase.auth.currentUser?.uid.toString()
+
+        onSwipeTouchListener = object : OnSwipeTouchListener(activityContext) {
+            override fun onSwipeLeft() {
+                if(currentVisibleTrainingId >= trainingsDataSet.size) {
+                    currentVisibleTrainingId = 1
+                }
+                else {
+                    currentVisibleTrainingId += 1
+                }
+                updateTrainingView(currentVisibleTrainingId)
+            }
+            override fun onSwipeRight() {
+                if (currentVisibleTrainingId <= 1) {
+                    currentVisibleTrainingId = trainingsDataSet.size
+                }
+                else {
+                    currentVisibleTrainingId -= 1
+                }
+                updateTrainingView(currentVisibleTrainingId)
+            }
+        }
 
         exerciseTemplateReference = FirebaseDatabase.getInstance()
             .getReference("Test/TestExercises") //should be "exercise templates" in db
@@ -44,7 +68,6 @@ class UserTrainingsActivity : AppCompatActivity() {
             startActivity(Intent(this,MainActivity::class.java))
             finish()
         }
-
 
         exerciseTemplateReference.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -76,26 +99,6 @@ class UserTrainingsActivity : AppCompatActivity() {
                 toast(getString(R.string.error_connecting_to_db, error.toString()))
             }
         })
-
-        binding.buttonNextTraining.setOnClickListener {
-            if(currentVisibleTrainingId >= trainingsDataSet.size) {
-                currentVisibleTrainingId = 1
-            }
-            else {
-                currentVisibleTrainingId += 1
-            }
-            updateTrainingView(currentVisibleTrainingId)
-        }
-
-        binding.buttonPrevTraining.setOnClickListener {
-            if (currentVisibleTrainingId <= 1) {
-                currentVisibleTrainingId = trainingsDataSet.size
-            }
-            else {
-                currentVisibleTrainingId -= 1
-            }
-            updateTrainingView(currentVisibleTrainingId)
-        }
 
         binding.buttonAddTraining.setOnClickListener {
             val TOCHANGEselectedDate = "25042022"
@@ -234,16 +237,12 @@ class UserTrainingsActivity : AppCompatActivity() {
     private fun showAddExerciseMenu(shouldBeVisible: Boolean) {
         if(shouldBeVisible) {
             binding.linearLayoutAddExercise.visibility = View.VISIBLE
-            binding.buttonNextTraining.visibility = View.GONE
-            binding.buttonPrevTraining.visibility = View.GONE
             binding.scrollViewExerciseList.visibility = View.GONE
             binding.buttonAddTraining.visibility = View.GONE
             binding.buttonBackToMenu.visibility = View.GONE
         }
         else {
             binding.linearLayoutAddExercise.visibility = View.GONE
-            binding.buttonNextTraining.visibility = View.VISIBLE
-            binding.buttonPrevTraining.visibility = View.VISIBLE
             binding.scrollViewExerciseList.visibility = View.VISIBLE
             binding.buttonAddTraining.visibility = View.VISIBLE
             binding.buttonBackToMenu.visibility = View.VISIBLE
@@ -372,13 +371,52 @@ class UserTrainingsActivity : AppCompatActivity() {
                             addSeriesInfo(seriesLL, listOfValues, seriesLayoutParams)
                             seriesIt += 1
                         }
-                        /*
-                        val addSeriesButton = Button(this)
+
+                        for(child in seriesLL.children) {
+                            child.setOnTouchListener(onSwipeTouchListener)
+                        }
+
+                        val buttonsLayoutParams = LinearLayout
+                            .LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f)
+                        exerciseLayoutParams.setMargins(50, 5, 50, 10)
+
+                        val horizontalLL = LinearLayout(this)
+                        horizontalLL.orientation = LinearLayout.HORIZONTAL
+                        horizontalLL.layoutParams = buttonsLayoutParams
+
+                        val deleteExerciseButton = LayoutInflater.from(this)
+                            .inflate(R.layout.button, null) as Button
+                        deleteExerciseButton.text = getString(R.string.delete_exercise)
+                        deleteExerciseButton.layoutParams = buttonsLayoutParams
+                        deleteExerciseButton.textSize =
+                            resources.getDimension(R.dimen.trainingSmallFontSize)
+                        deleteExerciseButton.setOnClickListener {
+
+                        }
+
+                        val addSeriesButton = LayoutInflater.from(this)
+                            .inflate(R.layout.button, null) as Button
                         addSeriesButton.text = getString(R.string.add_series)
+                        addSeriesButton.layoutParams = buttonsLayoutParams
+                        addSeriesButton.textSize =
+                            resources.getDimension(R.dimen.trainingSmallFontSize)
                         addSeriesButton.setOnClickListener {
 
                         }
-                        exerciseLL.addView(addSeriesButton) */
+
+                        horizontalLL.addView(deleteExerciseButton)
+                        horizontalLL.addView(addSeriesButton)
+                        exerciseLL.addView(horizontalLL)
+
+                        for(child in exerciseLL.children) {
+                            child.setOnTouchListener(onSwipeTouchListener)
+                        }
+                    }
+
+                    musclePartLL.setOnTouchListener(onSwipeTouchListener)
+                    for(child in musclePartLL.children) {
+                        child.setOnTouchListener(onSwipeTouchListener)
                     }
                 }
                 val buttonsLayoutParams = LinearLayout
