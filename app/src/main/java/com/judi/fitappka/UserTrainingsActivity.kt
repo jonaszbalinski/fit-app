@@ -90,9 +90,9 @@ class UserTrainingsActivity : AppCompatActivity() {
 
         trainingsDataReference.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Handler().postDelayed(Runnable {
+                Handler().postDelayed({
                     updateTrainingList(snapshot)
-                }, 300)
+                }, 200)
             }
 
             override fun onCancelled(error: DatabaseError) {

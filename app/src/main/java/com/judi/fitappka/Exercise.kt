@@ -1,8 +1,5 @@
 package com.judi.fitappka
 
-import android.util.Log
-import com.google.firebase.database.DataSnapshot
-
 class Exercise {
     val listOfSeries = mutableListOf<Series>()
     var id = -1

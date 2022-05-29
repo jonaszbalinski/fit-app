@@ -3,8 +3,6 @@ package com.judi.fitappka
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.judi.fitappka.databinding.ActivityMainBinding
 import extensions.Extensions.toast
 import utils.FirebaseUtils.firebaseAuth
@@ -27,17 +25,22 @@ class MainActivity : AppCompatActivity() {
 
 
         binding.buttonCreateExerciseMain.setOnClickListener{
-            startActivity(Intent(this,CreateExerciseActivity::class.java))
+            startActivity(Intent(this, CreateExerciseActivity::class.java))
             finish()
         }
 
         binding.buttonEditExerciseMain.setOnClickListener{
-            startActivity(Intent(this,EditExerciseActivity::class.java))
+            startActivity(Intent(this, EditExerciseActivity::class.java))
             finish()
         }
 
-        binding.ButtonTreningiMain.setOnClickListener{
-            startActivity(Intent(this,UserTrainingsActivity::class.java))
+        binding.buttonShowTrainings.setOnClickListener{
+            startActivity(Intent(this, UserTrainingsActivity::class.java))
+            finish()
+        }
+
+        binding.buttonShowSummary.setOnClickListener{
+            startActivity(Intent(this, TrainingsSummaryActivity::class.java))
             finish()
         }
 

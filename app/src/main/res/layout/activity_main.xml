@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Edytuj ćwiczenia"
+        android:text="@string/edit_exercises"
         android:textSize="@dimen/primaryTitleFontSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,22 +35,33 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:text="Stwórz ćwiczenie"
+        android:text="@string/create_exercises"
         android:textSize="@dimen/primaryTitleFontSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewTitle" />
 
     <Button
-        android:id="@+id/ButtonTreningiMain"
+        android:id="@+id/buttonShowTrainings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Przegląd treningów"
+        android:text="@string/show_trainings"
         android:textSize="@dimen/primaryTitleFontSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonEditExerciseMain" />
+
+    <Button
+        android:id="@+id/buttonShowSummary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/trainings_summary"
+        android:textSize="@dimen/primaryTitleFontSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonShowTrainings" />
 
     <TextView
         android:id="@+id/textViewTitle"
