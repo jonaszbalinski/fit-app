@@ -25,6 +25,7 @@
     <string name="add">Dodaj</string>
     <string name="name">Nazwa</string>
     <string name="copy">Kopiuj</string>
+    <string name="exercise_no_capitalize">ćwiczenie</string>
     <string name="delete_exercise">Usuń ćwiczenie</string>
     <string name="edit_exercise">Edytuj ćwiczenie</string>
     <string name="add_exercise">Dodaj ćwiczenie</string>

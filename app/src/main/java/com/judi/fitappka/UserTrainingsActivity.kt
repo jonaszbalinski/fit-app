@@ -167,7 +167,7 @@ class UserTrainingsActivity : AppCompatActivity() {
                             buttonAdd.text = getString(R.string.add_exercise)
                             buttonAdd.setOnClickListener {
                                 if(repsEditText != null) {
-                                    val s = repsEditText.text.toString().toIntOrNull();
+                                    val s = repsEditText.text.toString().toIntOrNull()
 
                                     if(s != null)
                                         exerciseValuesInfo["reps"] =
@@ -176,7 +176,7 @@ class UserTrainingsActivity : AppCompatActivity() {
                                         exerciseValuesInfo["reps"] = -1
                                 }
                                 if(weightEditText != null) {
-                                    val s = weightEditText.text.toString().toFloatOrNull();
+                                    val s = weightEditText.text.toString().toFloatOrNull()
 
                                     if(s != null)
                                         exerciseValuesInfo["weight"] =
@@ -185,7 +185,7 @@ class UserTrainingsActivity : AppCompatActivity() {
                                         exerciseValuesInfo["weight"] = -1
                                 }
                                 if(distanceEditText != null) {
-                                    val s = distanceEditText.text.toString().toFloatOrNull();
+                                    val s = distanceEditText.text.toString().toFloatOrNull()
 
                                     if(s != null)
                                         exerciseValuesInfo["distance"] =
@@ -194,7 +194,7 @@ class UserTrainingsActivity : AppCompatActivity() {
                                         exerciseValuesInfo["distance"] = -1
                                 }
                                 if(durationEditText != null) {
-                                    val s = durationEditText.text.toString().toFloatOrNull();
+                                    val s = durationEditText.text.toString().toFloatOrNull()
 
                                     if(s != null)
                                         exerciseValuesInfo["duration"] =
@@ -315,6 +315,11 @@ class UserTrainingsActivity : AppCompatActivity() {
                                   LinearLayout.LayoutParams.MATCH_PARENT, 1f)
                 seriesLayoutParams.setMargins(5, 5, 5, 10)
 
+                val seriesTVLayoutParams = LinearLayout
+                    .LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT, 1f)
+                seriesTVLayoutParams.setMargins(5, 5, 5, 10)
+
                 for(musclePart in training.musclePartMap.keys) {
                     val musclePartLL = LinearLayout(this)
                     musclePartLL.orientation = LinearLayout.VERTICAL
@@ -354,7 +359,7 @@ class UserTrainingsActivity : AppCompatActivity() {
                         if (exercise.containsWeight) listOfColumns.add(getString(R.string.weight))
                         if (exercise.containsDistance) listOfColumns.add(getString(R.string.distance))
                         if (exercise.containsDuration) listOfColumns.add(getString(R.string.duration))
-                        listOfColumns.add("")
+                        //listOfColumns.add("") //copy
 
                         val seriesLL = LinearLayout(this)
                         seriesLL.orientation = LinearLayout.VERTICAL
@@ -364,7 +369,33 @@ class UserTrainingsActivity : AppCompatActivity() {
                         seriesLL.layoutParams = seriesLayoutParams
                         exerciseLL.addView(seriesLL)
 
-                        addSeriesInfo(seriesLL, listOfColumns, seriesLayoutParams)
+                        val firstRowInfo = addSeriesInfo(seriesLL, listOfColumns, seriesLayoutParams)
+
+                        val deleteExerciseTV1 = TextView(this)
+                        deleteExerciseTV1.text = "(" + getString(R.string.delete)
+                        deleteExerciseTV1.setTextColor(resources.getColor(R.color.addPrimaryLayoutText))
+                        deleteExerciseTV1.textSize = resources.getDimension(R.dimen.trainingSmallFontSize)
+                        deleteExerciseTV1.gravity = Gravity.END
+                        deleteExerciseTV1.layoutParams = seriesLayoutParams
+                        deleteExerciseTV1.isClickable = true
+                        deleteExerciseTV1.setOnClickListener {
+                            trainingsDataReference.child(training.id.toString())
+                                .child(musclePart).child(exercise.id.toString()).removeValue()
+                        }
+                        val deleteExerciseTV2 = TextView(this)
+                        deleteExerciseTV2.text = getString(R.string.exercise_no_capitalize) + ")"
+                        deleteExerciseTV2.setTextColor(resources.getColor(R.color.addPrimaryLayoutText))
+                        deleteExerciseTV2.textSize = resources.getDimension(R.dimen.trainingSmallFontSize)
+                        deleteExerciseTV2.gravity = Gravity.START
+                        deleteExerciseTV2.layoutParams = seriesLayoutParams
+                        deleteExerciseTV2.isClickable = true
+                        deleteExerciseTV2.setOnClickListener {
+                            trainingsDataReference.child(training.id.toString())
+                                .child(musclePart).child(exercise.id.toString()).removeValue()
+                        }
+                        firstRowInfo.addView(deleteExerciseTV1) //delete
+                        firstRowInfo.addView(deleteExerciseTV2) //delete
+
                         var seriesIt = 1
                         for(series in exercise.listOfSeries) {
                             val listOfValues = mutableListOf(seriesIt.toString())
@@ -391,10 +422,10 @@ class UserTrainingsActivity : AppCompatActivity() {
                                 listOfValues, seriesLayoutParams)
                             val copyTV = TextView(this)
                             copyTV.text = "(" + getString(R.string.copy) + ")"
-                            copyTV.setTextColor(resources.getColor(R.color.minorLayoutText))
+                            copyTV.setTextColor(resources.getColor(R.color.addPrimaryLayoutText))
                             copyTV.textSize = resources.getDimension(R.dimen.trainingSmallFontSize)
                             copyTV.gravity = Gravity.CENTER
-                            copyTV.layoutParams = seriesLayoutParams
+                            copyTV.layoutParams = seriesTVLayoutParams
                             copyTV.isClickable = true
                             copyTV.setOnClickListener {
                                 val nextSeriesId = training.getNextSeriesId(exercise)
@@ -406,42 +437,33 @@ class UserTrainingsActivity : AppCompatActivity() {
                                     .updateChildren(seriesIdInfo)
                             }
                             listOfValuesLL.addView(copyTV)
+                            val deleteTV = TextView(this)
+                            deleteTV.text = "(" + getString(R.string.delete) + ")"
+                            deleteTV.setTextColor(resources.getColor(R.color.addPrimaryLayoutText))
+                            deleteTV.textSize = resources.getDimension(R.dimen.trainingSmallFontSize)
+                            deleteTV.gravity = Gravity.CENTER
+                            deleteTV.layoutParams = seriesTVLayoutParams
+                            deleteTV.isClickable = true
+                            deleteTV.setOnClickListener {
+                                trainingsDataReference.child(training.id.toString())
+                                    .child(musclePart).child(exercise.id.toString())
+                                    .child(series.id.toString()).removeValue()
+                            }
+                            listOfValuesLL.addView(deleteTV)
 
                             seriesIt += 1
                         }
-
-                        val buttonsLayoutParams = LinearLayout
-                            .LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f)
-                        exerciseLayoutParams.setMargins(50, 5, 50, 10)
-
-                        val horizontalLL = LinearLayout(this)
-                        horizontalLL.orientation = LinearLayout.HORIZONTAL
-                        horizontalLL.layoutParams = buttonsLayoutParams
-
-                        val deleteExerciseButton = LayoutInflater.from(this)
-                            .inflate(R.layout.button, null) as Button
-                        deleteExerciseButton.text = getString(R.string.delete_exercise)
-                        deleteExerciseButton.layoutParams = buttonsLayoutParams
-                        deleteExerciseButton.textSize =
-                            resources.getDimension(R.dimen.trainingSmallFontSize)
-                        deleteExerciseButton.setOnClickListener {
-
+                        val addSeriesTV = TextView(this)
+                        addSeriesTV.text = getString(R.string.add_series)
+                        addSeriesTV.setTextColor(resources.getColor(R.color.addPrimaryLayoutText))
+                        addSeriesTV.textSize = resources.getDimension(R.dimen.trainingMediumFontSize)
+                        addSeriesTV.gravity = Gravity.CENTER
+                        addSeriesTV.layoutParams = seriesTVLayoutParams
+                        addSeriesTV.isClickable = true
+                        addSeriesTV.setOnClickListener {
+                            val nextSeriesId = training.getNextSeriesId(exercise)
                         }
-
-                        val addSeriesButton = LayoutInflater.from(this)
-                            .inflate(R.layout.button, null) as Button
-                        addSeriesButton.text = getString(R.string.add_series)
-                        addSeriesButton.layoutParams = buttonsLayoutParams
-                        addSeriesButton.textSize =
-                            resources.getDimension(R.dimen.trainingSmallFontSize)
-                        addSeriesButton.setOnClickListener {
-
-                        }
-
-                        horizontalLL.addView(deleteExerciseButton)
-                        horizontalLL.addView(addSeriesButton)
-                        exerciseLL.addView(horizontalLL)
+                        seriesLL.addView(addSeriesTV)
                     }
                 }
                 val buttonsLayoutParams = LinearLayout
@@ -475,7 +497,8 @@ class UserTrainingsActivity : AppCompatActivity() {
                 deleteTrainingButton.text = getString(R.string.delete_training)
                 deleteTrainingButton.textSize = resources.getDimension(R.dimen.trainingSmallFontSize)
                 deleteTrainingButton.setOnClickListener {
-                    trainingsDataReference.child(trainingsIdsSet.elementAt(trainingsIdSetIterator).toString()).removeValue()
+                    trainingsDataReference.child(trainingsIdsSet.elementAt(trainingsIdSetIterator)
+                        .toString()).removeValue()
                     trainingsIdSetIterator -= 1
                     if(trainingsIdSetIterator < 0) {
                         trainingsIdSetIterator = trainingsIdsSet.size - 1
@@ -568,8 +591,4 @@ class UserTrainingsActivity : AppCompatActivity() {
         }
         return null
     }
-
-    private fun changeCurrentVisibleTrainingId(isNext: Boolean = true) {
-    }
-
 }
