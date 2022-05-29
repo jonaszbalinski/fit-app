@@ -42,6 +42,7 @@
     <string name="edit_exercises">Edytuj ćwiczenia</string>
     <string name="show_trainings">Przegląd treningów</string>
     <string name="trainings_summary">Podsumowanie treningów</string>
+    <string name="exercise_summary">Podsumowanie ćwiczenia</string>
 
     <!-- Muscle parts -->
     <string name="chest">Klatka piersiowa</string>
@@ -63,4 +64,10 @@
     <string name="weight">Ciężar:</string>
     <string name="distance">Dystans:</string>
     <string name="duration">Czas:</string>
+
+    <!-- Training summary -->
+    <string name="total_weight">Całkowity ciężar</string>
+    <string name="total_distance">Całkowity dystans</string>
+    <string name="total_duration">Całkowity czas</string>
+    <string name="average_speed">Średnia prędkość (km/h)</string>
 </resources>

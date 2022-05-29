@@ -36,7 +36,7 @@ class EditExerciseActivity : AppCompatActivity() {
         binding = ActivityEditExerciseBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.buttonBackEdit.setOnClickListener{
+        binding.buttonBackFromEdit.setOnClickListener{
             startActivity(Intent(this,MainActivity::class.java))
             finish()
         }
