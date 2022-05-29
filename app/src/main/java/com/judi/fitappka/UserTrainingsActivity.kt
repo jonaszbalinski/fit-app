@@ -7,15 +7,17 @@ import android.os.Handler
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.children
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 import com.judi.fitappka.databinding.ActivityUserTrainingsBinding
 import extensions.Extensions.toast
 import extensions.OnSwipeTouchListener
+import java.util.*
+
 
 class UserTrainingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUserTrainingsBinding
@@ -25,8 +27,9 @@ class UserTrainingsActivity : AppCompatActivity() {
 
     var exerciseTemplateSet: MutableSet<ExerciseTemplate> = mutableSetOf()
     var trainingsDataSet: MutableSet<Training> = mutableSetOf()
+    var trainingsIdsSet: SortedSet<Int> = sortedSetOf()
+    var trainingsIdSetIterator = 0
     var trainingsNextId = 1
-    var currentVisibleTrainingId = 1
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,22 +43,22 @@ class UserTrainingsActivity : AppCompatActivity() {
 
         onSwipeTouchListener = object : OnSwipeTouchListener(activityContext) {
             override fun onSwipeLeft() {
-                if(currentVisibleTrainingId >= trainingsDataSet.size) {
-                    currentVisibleTrainingId = 1
+                if(trainingsIdSetIterator >= trainingsIdsSet.size) {
+                    trainingsIdSetIterator = 0
                 }
                 else {
-                    currentVisibleTrainingId += 1
+                    trainingsIdSetIterator += 1
                 }
-                updateTrainingView(currentVisibleTrainingId)
+                updateTrainingView(trainingsIdsSet.elementAt(trainingsIdSetIterator))
             }
             override fun onSwipeRight() {
-                if (currentVisibleTrainingId <= 1) {
-                    currentVisibleTrainingId = trainingsDataSet.size
+                if(trainingsIdSetIterator <= 0) {
+                    trainingsIdSetIterator = trainingsIdsSet.size - 1
                 }
                 else {
-                    currentVisibleTrainingId -= 1
+                    trainingsIdSetIterator -= 1
                 }
-                updateTrainingView(currentVisibleTrainingId)
+                updateTrainingView(trainingsIdsSet.elementAt(trainingsIdSetIterator))
             }
         }
 
@@ -92,7 +95,7 @@ class UserTrainingsActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 Handler().postDelayed({
                     updateTrainingList(snapshot)
-                }, 200)
+                }, 100)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -109,7 +112,6 @@ class UserTrainingsActivity : AppCompatActivity() {
                 trainingsNextId.toString() to hashMapToUpdate
             )
             trainingsDataReference.updateChildren(secondHashMap)
-            currentVisibleTrainingId = trainingsNextId
             trainingsNextId += 1
             trainingsDataReference.child("nextId").setValue(trainingsNextId)
 
@@ -120,7 +122,6 @@ class UserTrainingsActivity : AppCompatActivity() {
                 nameListAdapter.add(exerciseTemplate.name)
             }
             binding.spinnerListOfExercises.adapter = nameListAdapter
-
         }
 
         binding.spinnerListOfExercises.onItemSelectedListener =
@@ -200,7 +201,8 @@ class UserTrainingsActivity : AppCompatActivity() {
 
                                 var nextSeriesId = 1
                                 for (training in trainingsDataSet) {
-                                    if (currentVisibleTrainingId == training.id) {
+                                    if (trainingsIdsSet.elementAt(trainingsIdSetIterator)
+                                        == training.id) {
                                         for (musclePart in training.musclePartMap.values) {
                                             for (exercise in musclePart) {
                                                 if (exercise.name == name) { // ?!!?!
@@ -216,7 +218,8 @@ class UserTrainingsActivity : AppCompatActivity() {
                                     nextSeriesId.toString() to exerciseValuesInfo
                                 )
 
-                                trainingsDataReference.child(currentVisibleTrainingId.toString())
+                                trainingsDataReference.child(trainingsIdsSet
+                                    .elementAt(trainingsIdSetIterator).toString())
                                     .child(exerciseTemplate.musclePart)
                                     .child(exerciseTemplate.id.toString())
                                     .updateChildren(seriesIdInfo)
@@ -257,6 +260,7 @@ class UserTrainingsActivity : AppCompatActivity() {
             }
             else {
                 val trainingId = training.key.toString().toInt()
+                trainingsIdsSet.add(trainingId)
                 val newTraining = Training(trainingId)
                 for (musclePart in training.children) {
                     val musclePartName = musclePart.key.toString()
@@ -281,7 +285,7 @@ class UserTrainingsActivity : AppCompatActivity() {
                 trainingsDataSet.add(newTraining)
             }
         }
-        updateTrainingView(currentVisibleTrainingId)
+        updateTrainingView(trainingsIdsSet.elementAt(trainingsIdSetIterator))
     }
 
     private fun updateTrainingView(trainingId: Int = 1) {
@@ -372,10 +376,6 @@ class UserTrainingsActivity : AppCompatActivity() {
                             seriesIt += 1
                         }
 
-                        for(child in seriesLL.children) {
-                            child.setOnTouchListener(onSwipeTouchListener)
-                        }
-
                         val buttonsLayoutParams = LinearLayout
                             .LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                                 LinearLayout.LayoutParams.WRAP_CONTENT, 0.5f)
@@ -408,15 +408,6 @@ class UserTrainingsActivity : AppCompatActivity() {
                         horizontalLL.addView(deleteExerciseButton)
                         horizontalLL.addView(addSeriesButton)
                         exerciseLL.addView(horizontalLL)
-
-                        for(child in exerciseLL.children) {
-                            child.setOnTouchListener(onSwipeTouchListener)
-                        }
-                    }
-
-                    musclePartLL.setOnTouchListener(onSwipeTouchListener)
-                    for(child in musclePartLL.children) {
-                        child.setOnTouchListener(onSwipeTouchListener)
                     }
                 }
                 val buttonsLayoutParams = LinearLayout
@@ -450,15 +441,33 @@ class UserTrainingsActivity : AppCompatActivity() {
                 deleteTrainingButton.text = getString(R.string.delete_training)
                 deleteTrainingButton.textSize = resources.getDimension(R.dimen.trainingSmallFontSize)
                 deleteTrainingButton.setOnClickListener {
-                    trainingsDataReference.child(currentVisibleTrainingId.toString()).removeValue()
-                    currentVisibleTrainingId -= 1
-                    updateTrainingView(currentVisibleTrainingId)
+                    trainingsDataReference.child(trainingsIdsSet.elementAt(trainingsIdSetIterator).toString()).removeValue()
+                    trainingsIdSetIterator -= 1
+                    if(trainingsIdSetIterator < 0) {
+                        trainingsIdSetIterator = trainingsIdsSet.size - 1
+                    }
+                    updateTrainingView(trainingsIdsSet.elementAt(trainingsIdSetIterator))
                 }
                 horizontalLL.addView(deleteTrainingButton)
 
                 binding.linearLayoutExerciseList.addView(horizontalLL)
 
+                applyTouchListenerToAllChildren(binding.scrollViewExerciseList, onSwipeTouchListener)
                 return
+            }
+        }
+    }
+
+    private fun applyTouchListenerToAllChildren(parent: ViewGroup, listener: OnSwipeTouchListener) {
+        for (i in 0 until parent.childCount) {
+            val child = parent.getChildAt(i)
+            if (child is ViewGroup) {
+                applyTouchListenerToAllChildren(child, listener)
+                child.setOnTouchListener(listener)
+            } else {
+                if(child !is Button) {
+                    child?.setOnTouchListener(listener)
+                }
             }
         }
     }
@@ -517,6 +526,9 @@ class UserTrainingsActivity : AppCompatActivity() {
             parent.addView(horizontalLL)
         }
         return null
+    }
+
+    private fun changeCurrentVisibleTrainingId(isNext: Boolean = true) {
     }
 
 }

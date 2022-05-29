@@ -19,8 +19,8 @@ open class OnSwipeTouchListener(ctx: Context?) : OnTouchListener {
     }
 
     private inner class GestureListener : SimpleOnGestureListener() {
-        private val swipeThreshold = 100
-        private val swipeVelocityThreshold = 100
+        private val swipeThreshold = 50
+        private val swipeVelocityThreshold = 50
 
         override fun onDown(e: MotionEvent): Boolean {
             return true
