@@ -493,8 +493,7 @@ class UserTrainingsActivity : AppCompatActivity() {
                         addSeriesTV.layoutParams = seriesTVLayoutParams
                         addSeriesTV.isClickable = true
                         addSeriesTV.setOnClickListener {
-                            exercise.isAddNewSeriesActive = true
-                            binding.textViewSeriesName.text = exercise.name
+                            addSeriesTV.visibility = View.GONE
 
                             val newSeriesLL = LinearLayout(this)
                             newSeriesLL.orientation = LinearLayout.HORIZONTAL
@@ -518,7 +517,6 @@ class UserTrainingsActivity : AppCompatActivity() {
                                 val editTextWeight = EditText(this)
                                 editTexts.add(editTextWeight)
                             }
-
                             if (exercise.containsDistance) {
                                 val editTextDistance = EditText(this)
                                 editTexts.add(editTextDistance)
@@ -548,7 +546,6 @@ class UserTrainingsActivity : AppCompatActivity() {
                             confirmAddSeriesTV1.layoutParams = seriesLayoutParams
                             confirmAddSeriesTV1.isClickable = true
                             confirmAddSeriesTV1.setOnClickListener {
-                                exercise.isAddNewSeriesActive = false
                                 val propertiesInput = hashMapOf<String, Any>()
                                 var propertiesIterator = 0
                                 if (exercise.containsReps) {
@@ -579,6 +576,7 @@ class UserTrainingsActivity : AppCompatActivity() {
                                     .child(musclePart).child(exercise.id.toString())
                                     .updateChildren(seriesIdInfo)
                             }
+
                             val confirmAddSeriesTV2 = TextView(this)
                             confirmAddSeriesTV2.text = getString(R.string.add_series_2)
                             confirmAddSeriesTV2.setTextColor(resources.getColor(R.color.addPrimaryLayoutText))
@@ -587,7 +585,6 @@ class UserTrainingsActivity : AppCompatActivity() {
                             confirmAddSeriesTV2.layoutParams = seriesLayoutParams
                             confirmAddSeriesTV2.isClickable = true
                             confirmAddSeriesTV2.setOnClickListener {
-                                exercise.isAddNewSeriesActive = false
                                 val propertiesInput = hashMapOf<String, Any>()
                                 var propertiesIterator = 0
                                 if (exercise.containsReps) {
@@ -624,8 +621,6 @@ class UserTrainingsActivity : AppCompatActivity() {
                             seriesLL.addView(newSeriesLL)
                         }
 
-                        if(exercise.isAddNewSeriesActive) addSeriesTV.visibility = View.GONE
-                        else addSeriesTV.visibility = View.VISIBLE
                         seriesLL.addView(addSeriesTV)
                     }
                 }

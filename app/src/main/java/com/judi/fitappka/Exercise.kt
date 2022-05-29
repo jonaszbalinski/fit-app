@@ -9,7 +9,6 @@ class Exercise {
     var containsWeight = false
     var containsDistance = false
     var containsDuration = false
-    var isAddNewSeriesActive = false
 
     fun addSeries(series: Series) {
         listOfSeries.add(series)
