@@ -77,4 +77,6 @@
     <string name="total_distance">Całkowity dystans</string>
     <string name="total_duration">Całkowity czas</string>
     <string name="average_speed">Średnia prędkość (km/h)</string>
+    <string name="add_series_1">Dodaj</string>
+    <string name="add_series_2"> serię</string>
 </resources>

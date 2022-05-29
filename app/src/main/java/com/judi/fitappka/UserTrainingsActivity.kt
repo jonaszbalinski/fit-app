@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.text.InputType
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -58,6 +59,13 @@ class UserTrainingsActivity : AppCompatActivity() {
                 else {
                     trainingsIdSetIterator -= 1
                 }
+                /*for(training in trainingsDataSet) {
+                    for (musclePart in training.musclePartMap.values) {
+                        for (exercise in musclePart) {
+                            exercise.isAddNewSeriesActive = false
+                        }
+                    }
+                }*/
                 updateTrainingView(trainingsIdsSet.elementAt(trainingsIdSetIterator))
             }
         }
@@ -105,6 +113,9 @@ class UserTrainingsActivity : AppCompatActivity() {
 
         binding.buttonCancelAddExercise.setOnClickListener {
             showAddExerciseMenu(false)
+        }
+        binding.buttonCancelAddSeries.setOnClickListener {
+            showAddSeriesMenu(false)
         }
 
         binding.buttonAddTraining.setOnClickListener {
@@ -241,13 +252,34 @@ class UserTrainingsActivity : AppCompatActivity() {
 
     private fun showAddExerciseMenu(shouldBeVisible: Boolean) {
         if(shouldBeVisible) {
+            showAddSeriesMenu(false)
             binding.constraintLayoutAddExercise.visibility = View.VISIBLE
+            binding.textViewDateOfTraining.visibility = View.GONE
             binding.scrollViewExerciseList.visibility = View.GONE
             binding.buttonAddTraining.visibility = View.GONE
             binding.buttonBackToMenu.visibility = View.GONE
         }
         else {
             binding.constraintLayoutAddExercise.visibility = View.GONE
+            binding.textViewDateOfTraining.visibility = View.VISIBLE
+            binding.scrollViewExerciseList.visibility = View.VISIBLE
+            binding.buttonAddTraining.visibility = View.VISIBLE
+            binding.buttonBackToMenu.visibility = View.VISIBLE
+        }
+    }
+
+    private fun showAddSeriesMenu(shouldBeVisible: Boolean) {
+        if(shouldBeVisible) {
+            showAddExerciseMenu(false)
+            binding.constraintLayoutAddSeries.visibility = View.VISIBLE
+            binding.textViewDateOfTraining.visibility = View.GONE
+            binding.scrollViewExerciseList.visibility = View.GONE
+            binding.buttonAddTraining.visibility = View.GONE
+            binding.buttonBackToMenu.visibility = View.GONE
+        }
+        else {
+            binding.constraintLayoutAddSeries.visibility = View.GONE
+            binding.textViewDateOfTraining.visibility = View.VISIBLE
             binding.scrollViewExerciseList.visibility = View.VISIBLE
             binding.buttonAddTraining.visibility = View.VISIBLE
             binding.buttonBackToMenu.visibility = View.VISIBLE
@@ -461,8 +493,139 @@ class UserTrainingsActivity : AppCompatActivity() {
                         addSeriesTV.layoutParams = seriesTVLayoutParams
                         addSeriesTV.isClickable = true
                         addSeriesTV.setOnClickListener {
+                            exercise.isAddNewSeriesActive = true
+                            binding.textViewSeriesName.text = exercise.name
+
+                            val newSeriesLL = LinearLayout(this)
+                            newSeriesLL.orientation = LinearLayout.HORIZONTAL
+                            newSeriesLL.layoutParams = seriesLayoutParams
+                            newSeriesLL.setBackgroundColor(resources.getColor(R.color.primaryLayoutBackground))
+
+                            val newSeriesIdTV = TextView(this)
+                            newSeriesIdTV.text = seriesIt.toString()
+                            newSeriesIdTV.setTextColor(resources.getColor(R.color.primaryLayoutText))
+                            newSeriesIdTV.textSize = resources.getDimension(R.dimen.trainingSmallFontSize)
+                            newSeriesIdTV.gravity = Gravity.CENTER
+                            newSeriesIdTV.layoutParams = seriesLayoutParams
+                            newSeriesLL.addView(newSeriesIdTV)
+
+                            val editTexts = mutableSetOf<EditText>()
+                            if (exercise.containsReps) {
+                                val editTextReps = EditText(this)
+                                editTexts.add(editTextReps)
+                            }
+                            if (exercise.containsWeight) {
+                                val editTextWeight = EditText(this)
+                                editTexts.add(editTextWeight)
+                            }
+
+                            if (exercise.containsDistance) {
+                                val editTextDistance = EditText(this)
+                                editTexts.add(editTextDistance)
+                            }
+                            if (exercise.containsDuration) {
+                                val editTextDuration = EditText(this)
+                                editTexts.add(editTextDuration)
+                            }
+
+                            for (editText in editTexts) {
+                                editText.layoutParams = seriesLayoutParams
+                                editText.setTextColor(resources.getColor(R.color.primaryLayoutText))
+                                editText.textSize = resources.getDimension(R.dimen.trainingSmallFontSize)
+                                editText.gravity = Gravity.CENTER
+                                editText.layoutParams = seriesLayoutParams
+                                editText.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL
+                                newSeriesLL.addView(editText)
+                            }
+
                             val nextSeriesId = training.getNextSeriesId(exercise)
+
+                            val confirmAddSeriesTV1 = TextView(this)
+                            confirmAddSeriesTV1.text = getString(R.string.add_series_1)
+                            confirmAddSeriesTV1.setTextColor(resources.getColor(R.color.addPrimaryLayoutText))
+                            confirmAddSeriesTV1.textSize = resources.getDimension(R.dimen.trainingMediumFontSize)
+                            confirmAddSeriesTV1.gravity = Gravity.END
+                            confirmAddSeriesTV1.layoutParams = seriesLayoutParams
+                            confirmAddSeriesTV1.isClickable = true
+                            confirmAddSeriesTV1.setOnClickListener {
+                                exercise.isAddNewSeriesActive = false
+                                val propertiesInput = hashMapOf<String, Any>()
+                                var propertiesIterator = 0
+                                if (exercise.containsReps) {
+                                    propertiesInput["reps"] = editTexts
+                                        .elementAt(propertiesIterator).text.toString().toInt()
+                                    propertiesIterator += 1
+                                }
+                                if (exercise.containsWeight) {
+                                    propertiesInput["weight"] = editTexts
+                                        .elementAt(propertiesIterator).text.toString().toFloat()
+                                    propertiesIterator += 1
+                                }
+                                if (exercise.containsDistance) {
+                                    propertiesInput["distance"] = editTexts
+                                        .elementAt(propertiesIterator).text.toString().toFloat()
+                                    propertiesIterator += 1
+                                }
+                                if (exercise.containsDuration) {
+                                    propertiesInput["duration"] = editTexts
+                                        .elementAt(propertiesIterator).text.toString().toFloat()
+                                    propertiesIterator += 1
+                                }
+
+                                val seriesIdInfo = hashMapOf<String, Any>(
+                                    nextSeriesId.toString() to propertiesInput
+                                )
+                                trainingsDataReference.child(training.id.toString())
+                                    .child(musclePart).child(exercise.id.toString())
+                                    .updateChildren(seriesIdInfo)
+                            }
+                            val confirmAddSeriesTV2 = TextView(this)
+                            confirmAddSeriesTV2.text = getString(R.string.add_series_2)
+                            confirmAddSeriesTV2.setTextColor(resources.getColor(R.color.addPrimaryLayoutText))
+                            confirmAddSeriesTV2.textSize = resources.getDimension(R.dimen.trainingMediumFontSize)
+                            confirmAddSeriesTV2.gravity = Gravity.START
+                            confirmAddSeriesTV2.layoutParams = seriesLayoutParams
+                            confirmAddSeriesTV2.isClickable = true
+                            confirmAddSeriesTV2.setOnClickListener {
+                                exercise.isAddNewSeriesActive = false
+                                val propertiesInput = hashMapOf<String, Any>()
+                                var propertiesIterator = 0
+                                if (exercise.containsReps) {
+                                    propertiesInput["reps"] = editTexts
+                                        .elementAt(propertiesIterator).text.toString().toInt()
+                                    propertiesIterator += 1
+                                }
+                                if (exercise.containsWeight) {
+                                    propertiesInput["weight"] = editTexts
+                                        .elementAt(propertiesIterator).text.toString().toFloat()
+                                    propertiesIterator += 1
+                                }
+                                if (exercise.containsDistance) {
+                                    propertiesInput["distance"] = editTexts
+                                        .elementAt(propertiesIterator).text.toString().toFloat()
+                                    propertiesIterator += 1
+                                }
+                                if (exercise.containsDuration) {
+                                    propertiesInput["duration"] = editTexts
+                                        .elementAt(propertiesIterator).text.toString().toFloat()
+                                    propertiesIterator += 1
+                                }
+
+                                val seriesIdInfo = hashMapOf<String, Any>(
+                                    nextSeriesId.toString() to propertiesInput
+                                )
+                                trainingsDataReference.child(training.id.toString())
+                                    .child(musclePart).child(exercise.id.toString())
+                                    .updateChildren(seriesIdInfo)
+                            }
+
+                            newSeriesLL.addView(confirmAddSeriesTV1)
+                            newSeriesLL.addView(confirmAddSeriesTV2)
+                            seriesLL.addView(newSeriesLL)
                         }
+
+                        if(exercise.isAddNewSeriesActive) addSeriesTV.visibility = View.GONE
+                        else addSeriesTV.visibility = View.VISIBLE
                         seriesLL.addView(addSeriesTV)
                     }
                 }
