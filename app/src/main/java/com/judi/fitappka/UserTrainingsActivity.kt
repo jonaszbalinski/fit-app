@@ -103,6 +103,10 @@ class UserTrainingsActivity : AppCompatActivity() {
             }
         })
 
+        binding.buttonCancelAddExercise.setOnClickListener {
+            showAddExerciseMenu(false)
+        }
+
         binding.buttonAddTraining.setOnClickListener {
             val TOCHANGEselectedDate = "25042022"
             val hashMapToUpdate = hashMapOf(
@@ -231,21 +235,19 @@ class UserTrainingsActivity : AppCompatActivity() {
                         }
                     }
                 }
-                override fun onNothingSelected(arg0: AdapterView<*>?) {
-
-                }
+                override fun onNothingSelected(arg0: AdapterView<*>?) {}
             }
     }
 
     private fun showAddExerciseMenu(shouldBeVisible: Boolean) {
         if(shouldBeVisible) {
-            binding.linearLayoutAddExercise.visibility = View.VISIBLE
+            binding.constraintLayoutAddExercise.visibility = View.VISIBLE
             binding.scrollViewExerciseList.visibility = View.GONE
             binding.buttonAddTraining.visibility = View.GONE
             binding.buttonBackToMenu.visibility = View.GONE
         }
         else {
-            binding.linearLayoutAddExercise.visibility = View.GONE
+            binding.constraintLayoutAddExercise.visibility = View.GONE
             binding.scrollViewExerciseList.visibility = View.VISIBLE
             binding.buttonAddTraining.visibility = View.VISIBLE
             binding.buttonBackToMenu.visibility = View.VISIBLE
@@ -316,7 +318,6 @@ class UserTrainingsActivity : AppCompatActivity() {
                 for(musclePart in training.musclePartMap.keys) {
                     val musclePartLL = LinearLayout(this)
                     musclePartLL.orientation = LinearLayout.VERTICAL
-                    //musclePartLL.gravity = Gravity.CENTER
                     musclePartLL.setBackgroundColor(resources
                         .getColor(R.color.primaryLayoutBackground))
                     musclePartLL.layoutParams = musclePartLayoutParams
@@ -353,6 +354,7 @@ class UserTrainingsActivity : AppCompatActivity() {
                         if (exercise.containsWeight) listOfColumns.add(getString(R.string.weight))
                         if (exercise.containsDistance) listOfColumns.add(getString(R.string.distance))
                         if (exercise.containsDuration) listOfColumns.add(getString(R.string.duration))
+                        listOfColumns.add("")
 
                         val seriesLL = LinearLayout(this)
                         seriesLL.orientation = LinearLayout.VERTICAL
@@ -366,13 +368,45 @@ class UserTrainingsActivity : AppCompatActivity() {
                         var seriesIt = 1
                         for(series in exercise.listOfSeries) {
                             val listOfValues = mutableListOf(seriesIt.toString())
+                            val seriesValueInfo = hashMapOf<String, Any>()
 
-                            if (series.reps != null) listOfValues.add(series.reps.toString())
-                            if (series.weight != null) listOfValues.add(series.weight.toString())
-                            if (series.distance != null) listOfValues.add(series.distance.toString())
-                            if (series.duration != null) listOfValues.add(series.duration.toString())
+                            if (series.reps != null)  {
+                                listOfValues.add(series.reps.toString())
+                                seriesValueInfo["reps"] = series.reps!!
+                            }
+                            if (series.weight != null) {
+                                listOfValues.add(series.weight.toString())
+                                seriesValueInfo["weight"] = series.weight!!
+                            }
+                            if (series.distance != null) {
+                                listOfValues.add(series.distance.toString())
+                                seriesValueInfo["distance"] = series.distance!!
+                            }
+                            if (series.duration != null) {
+                                listOfValues.add(series.duration.toString())
+                                seriesValueInfo["duration"] = series.duration!!
+                            }
 
-                            addSeriesInfo(seriesLL, listOfValues, seriesLayoutParams)
+                            val listOfValuesLL = addSeriesInfo(seriesLL,
+                                listOfValues, seriesLayoutParams)
+                            val copyTV = TextView(this)
+                            copyTV.text = "(" + getString(R.string.copy) + ")"
+                            copyTV.setTextColor(resources.getColor(R.color.minorLayoutText))
+                            copyTV.textSize = resources.getDimension(R.dimen.trainingSmallFontSize)
+                            copyTV.gravity = Gravity.CENTER
+                            copyTV.layoutParams = seriesLayoutParams
+                            copyTV.isClickable = true
+                            copyTV.setOnClickListener {
+                                val nextSeriesId = training.getNextSeriesId(exercise)
+                                val seriesIdInfo = hashMapOf<String, Any>(
+                                    nextSeriesId.toString() to seriesValueInfo
+                                )
+                                trainingsDataReference.child(training.id.toString())
+                                    .child(musclePart).child(exercise.id.toString())
+                                    .updateChildren(seriesIdInfo)
+                            }
+                            listOfValuesLL.addView(copyTV)
+
                             seriesIt += 1
                         }
 
@@ -465,7 +499,13 @@ class UserTrainingsActivity : AppCompatActivity() {
                 applyTouchListenerToAllChildren(child, listener)
                 child.setOnTouchListener(listener)
             } else {
-                if(child !is Button) {
+                if(child is TextView) {
+                    if(!child.isClickable) {
+                        child.isClickable = true
+                        child.setOnTouchListener(listener)
+                    }
+                }
+                else if(child !is Button) {
                     child?.setOnTouchListener(listener)
                 }
             }
@@ -473,7 +513,7 @@ class UserTrainingsActivity : AppCompatActivity() {
     }
 
     private fun addSeriesInfo(parent: LinearLayout, valueList: List<String>,
-                              layoutParams: LinearLayout.LayoutParams) {
+                              layoutParams: LinearLayout.LayoutParams): LinearLayout {
         val horizontalLL = LinearLayout(this)
         horizontalLL.orientation = LinearLayout.HORIZONTAL
         horizontalLL.layoutParams = layoutParams
@@ -489,6 +529,7 @@ class UserTrainingsActivity : AppCompatActivity() {
         }
 
         parent.addView(horizontalLL)
+        return horizontalLL
     }
 
     private fun decodeMusclePartName(musclePart: String): String {

@@ -19,6 +19,12 @@
     <string name="test_database">Testowa baza danych</string>
     <string name="error_connecting_to_db">Wystąpił błąd: %s</string>
     <string name="edit">Edytuj</string>
+    <string name="cancel">Anuluj</string>
+    <string name="delete">Usuń</string>
+    <string name="save">Zapisz</string>
+    <string name="add">Dodaj</string>
+    <string name="name">Nazwa</string>
+    <string name="copy">Kopiuj</string>
     <string name="delete_exercise">Usuń ćwiczenie</string>
     <string name="edit_exercise">Edytuj ćwiczenie</string>
     <string name="add_exercise">Dodaj ćwiczenie</string>
