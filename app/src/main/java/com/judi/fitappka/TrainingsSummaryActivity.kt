@@ -3,6 +3,7 @@ package com.judi.fitappka
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
 import android.widget.AdapterView
@@ -13,9 +14,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
-import com.jjoe64.graphview.GraphView
 import com.judi.fitappka.databinding.ActivityTrainingsSummaryBinding
+import extensions.DataPoint
 import extensions.Extensions.toast
+import extensions.SimpleGraphView
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -118,10 +120,8 @@ class TrainingsSummaryActivity : AppCompatActivity() {
                             if (exerciseTemplate.name ==
                                 binding.spinnerChooseExcercise.selectedItem.toString()) {
                                 selectedExerciseTemplate = exerciseTemplate
-                                val summary = calculateExerciseSummary(exerciseTemplate,
-                                    trainingsDataSet)
-                                addExerciseSummaryInfoToLayout(summary, binding.linearLayoutSummary)
-                            }
+                                calculateExerciseSummary(exerciseTemplate, trainingsDataSet)
+                                }
                         }
                     }
                 }
@@ -150,9 +150,7 @@ class TrainingsSummaryActivity : AppCompatActivity() {
                     }
 
                     if(selectedExerciseTemplate != null) {
-                        val summary = calculateExerciseSummary(selectedExerciseTemplate!!,
-                            trainingsDataSet)
-                        addExerciseSummaryInfoToLayout(summary, binding.linearLayoutSummary)
+                        calculateExerciseSummary(selectedExerciseTemplate!!, trainingsDataSet)
                     }
                 }
                 override fun onNothingSelected(arg0: AdapterView<*>?) {}
@@ -192,7 +190,7 @@ class TrainingsSummaryActivity : AppCompatActivity() {
     }
 
     fun calculateExerciseSummary(exerciseTemplate: ExerciseTemplate,
-                                 trainingSet: Set<Training>): MutableMap<String, Float> {
+                                 trainingSet: Set<Training>) {
         val summaryHashMap = mutableMapOf<String, Float>()
         val graphInfoHashMap = mutableMapOf<String, List<Float>>()
         if(exerciseTemplate.containsWeight) {
@@ -212,8 +210,15 @@ class TrainingsSummaryActivity : AppCompatActivity() {
         val sdf = SimpleDateFormat("ddMMyyyy", Locale.getDefault())
         val currentDate = sdf.format(Date())
 
+        val weightPointList = mutableListOf<Float>()
+        val durationPointList = mutableListOf<Float>()
+        val distancePointList = mutableListOf<Float>()
+
         for(training in trainingSet) {
             if(calculateDaysBetweenDates(currentDate, training.date) <= selectedDateRange) {
+                var weightPoints = 0f
+                var durationPoints = 0f
+                var distancePoints = 0f
                 for (musclePart in training.musclePartMap) {
                     if(musclePart.key == exerciseTemplate.musclePart) {
                         for (exerciseInTraining in musclePart.value) {
@@ -226,6 +231,7 @@ class TrainingsSummaryActivity : AppCompatActivity() {
                                         }
                                         summaryHashMap["Total weight"] =
                                             summaryHashMap["Total weight"]!! + toAdd
+                                        weightPoints += toAdd
                                     }
                                 }
                                 if(exerciseTemplate.containsDuration) {
@@ -236,6 +242,7 @@ class TrainingsSummaryActivity : AppCompatActivity() {
                                         }
                                         summaryHashMap["Total duration"] =
                                             summaryHashMap["Total duration"]!! + toAdd
+                                        durationPoints += toAdd
                                     }
                                 }
                                 if(exerciseTemplate.containsDistance) {
@@ -246,14 +253,37 @@ class TrainingsSummaryActivity : AppCompatActivity() {
                                         }
                                         summaryHashMap["Total distance"] =
                                             summaryHashMap["Total distance"]!! + toAdd
+                                        distancePoints += toAdd
                                     }
                                 }
                             }
                         }
                     }
                 }
+
+                if(exerciseTemplate.containsWeight) {
+                    weightPointList.add(weightPoints)
+                }
+                if(exerciseTemplate.containsDuration) {
+                    durationPointList.add(durationPoints)
+                }
+                if(exerciseTemplate.containsDistance) {
+                    distancePointList.add(distancePoints)
+                }
             }
         }
+
+        if(exerciseTemplate.containsWeight) {
+            graphInfoHashMap["Total weight"] = weightPointList
+        }
+        if(exerciseTemplate.containsDuration) {
+            graphInfoHashMap["Total duration"] = durationPointList
+        }
+        if(exerciseTemplate.containsDistance) {
+            graphInfoHashMap["Total distance"] = distancePointList
+        }
+
+
 
         if(exerciseTemplate.containsDistance && exerciseTemplate.containsDuration) {
             if(summaryHashMap["Total distance"]!! > 0f && summaryHashMap["Total duration"]!! > 0f) {
@@ -262,10 +292,13 @@ class TrainingsSummaryActivity : AppCompatActivity() {
             }
         }
 
-        return summaryHashMap
+        addExerciseSummaryInfoToLayout(summaryHashMap, graphInfoHashMap,
+            binding.linearLayoutSummary)
     }
 
-    fun addExerciseSummaryInfoToLayout(summary: MutableMap<String, Float>, layout: LinearLayout) {
+    fun addExerciseSummaryInfoToLayout(summary: MutableMap<String, Float>,
+                                       graphPoints: MutableMap<String, List<Float>>,
+                                       layout: LinearLayout) {
         layout.removeAllViews()
 
         val layoutParams = LinearLayout
@@ -299,7 +332,44 @@ class TrainingsSummaryActivity : AppCompatActivity() {
             horizontalLL.addView(textViewValue)
             layout.addView(horizontalLL)
         }
+
+        drawGraphSummary(graphPoints, binding.linearLayoutSummary)
     }
+
+    private fun drawGraphSummary(graphPoints: MutableMap<String, List<Float>>,
+                                 layout: LinearLayout) {
+        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT)
+        val graphView = SimpleGraphView(this)
+        graphView.layoutParams = layoutParams
+        val dataPointList = mutableListOf<DataPoint>()
+        /*
+        for (i in 0 until graphPoints.values.first().size) {
+            val dataPoint = DataPoint(i, (graphPoints.values.first()[i]).toInt())
+            dataPointList.add(dataPoint)
+        }
+        */
+
+        for (i in 0 until 100) {
+            val dataPoint = DataPoint(i, i*i)
+            dataPointList.add(dataPoint)
+        }
+
+        graphView.setData(dataPointList)
+        layout.addView(graphView)
+
+        val textView = TextView(this)
+        textView.text = "..."
+        textView.textSize = resources.getDimension(R.dimen.trainingMediumFontSize)
+        textView.gravity = Gravity.CENTER
+        textView.setPadding(5, 10, 5, 15)
+        textView.setTextColor(resources
+            .getColor(R.color.primaryLayoutText))
+        layout.addView(textView)
+
+    }
+
+
     private fun decodeMusclePartName(musclePart: String): String {
         return when (musclePart) {
             "Chest" -> getString(R.string.chest)
@@ -351,10 +421,7 @@ class TrainingsSummaryActivity : AppCompatActivity() {
         val trainingDate = sdf.parse(trainingDateFormatted)
 
         val diff: Long = (currentDate?.time ?: 0) - (trainingDate?.time ?: 0)
-        toast("Range: $selectedDateRange, current: $currentDateFormatted\n" +
-                " training: $trainingDateFormatted, diff : " +
-                "${TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)}\n" +
-                "currentDate: $currentDate, trainingDate: $trainingDate")
+
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
     }
 }
