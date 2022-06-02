@@ -38,6 +38,7 @@
     <string name="back_to_menu">Wróć do menu</string>
     <string name="name_of_exercise">Nazwa ćwiczenia</string>
     <string name="choose_muscle_part">Wybierz partię mięśniową</string>
+    <string name="choose_muscle_part_and_exercise">Wybierz partię mięśniową i ćwiczenie</string>
     <string name="choose_properties">Wybierz sposoby pomiaru ćwiczenia</string>
     <string name="create_exercise">Stwórz ćwiczenie</string>
     <string name="choose_exercise">Wybierz ćwiczenie</string>
@@ -79,4 +80,11 @@
     <string name="average_speed">Średnia prędkość (km/h)</string>
     <string name="add_series_1">Dodaj</string>
     <string name="add_series_2"> serię</string>
+
+    <!-- Date ranges -->
+    <string name="choose_date_range">Wybierz zakres dat</string>
+    <string name="last_7_days">Ostatnie 7 dni</string>
+    <string name="last_30_days">Ostatnie 30 dni</string>
+    <string name="last_90_days">Ostatnie 90 dni</string>
+    <string name="last_year">Ostatni rok</string>
 </resources>

@@ -1,7 +1,6 @@
 package com.judi.fitappka
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.Gravity
@@ -10,11 +9,16 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
+import com.jjoe64.graphview.GraphView
 import com.judi.fitappka.databinding.ActivityTrainingsSummaryBinding
 import extensions.Extensions.toast
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class TrainingsSummaryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTrainingsSummaryBinding
@@ -25,6 +29,8 @@ class TrainingsSummaryActivity : AppCompatActivity() {
     var trainingsDataSet: MutableSet<Training> = mutableSetOf()
     var selectedMusclePartId = 0
     var selectedExerciseId = 0
+    var selectedDateRange = 7
+    var selectedExerciseTemplate: ExerciseTemplate? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,11 +117,42 @@ class TrainingsSummaryActivity : AppCompatActivity() {
                                 binding.spinnerChooseMusclePart.selectedItem.toString())) {
                             if (exerciseTemplate.name ==
                                 binding.spinnerChooseExcercise.selectedItem.toString()) {
+                                selectedExerciseTemplate = exerciseTemplate
                                 val summary = calculateExerciseSummary(exerciseTemplate,
                                     trainingsDataSet)
                                 addExerciseSummaryInfoToLayout(summary, binding.linearLayoutSummary)
                             }
                         }
+                    }
+                }
+                override fun onNothingSelected(arg0: AdapterView<*>?) {}
+        }
+
+        val dateRangesAdapterView = ArrayAdapter<String>(this,
+            android.R.layout.simple_spinner_dropdown_item)
+        dateRangesAdapterView.add(getString(R.string.last_7_days))
+        dateRangesAdapterView.add(getString(R.string.last_30_days))
+        dateRangesAdapterView.add(getString(R.string.last_90_days))
+        dateRangesAdapterView.add(getString(R.string.last_year))
+
+        binding.spinnerChooseDates.adapter = dateRangesAdapterView
+        binding.spinnerChooseDates.setSelection(0)
+
+        binding.spinnerChooseDates.onItemSelectedListener =
+            object: AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, id: Int, pos: Long) {
+                    selectedDateRange = when(binding.spinnerChooseDates.selectedItem.toString()) {
+                        getString(R.string.last_7_days) -> 7
+                        getString(R.string.last_30_days) -> 30
+                        getString(R.string.last_90_days) -> 90
+                        getString(R.string.last_year) -> 365
+                        else -> 0
+                    }
+
+                    if(selectedExerciseTemplate != null) {
+                        val summary = calculateExerciseSummary(selectedExerciseTemplate!!,
+                            trainingsDataSet)
+                        addExerciseSummaryInfoToLayout(summary, binding.linearLayoutSummary)
                     }
                 }
                 override fun onNothingSelected(arg0: AdapterView<*>?) {}
@@ -157,31 +194,59 @@ class TrainingsSummaryActivity : AppCompatActivity() {
     fun calculateExerciseSummary(exerciseTemplate: ExerciseTemplate,
                                  trainingSet: Set<Training>): MutableMap<String, Float> {
         val summaryHashMap = mutableMapOf<String, Float>()
-        if(exerciseTemplate.containsWeight) summaryHashMap["Total weight"] = 0f
-        if(exerciseTemplate.containsDuration) summaryHashMap["Total duration"] = 0f
-        if(exerciseTemplate.containsDistance) summaryHashMap["Total distance"] = 0f
+        val graphInfoHashMap = mutableMapOf<String, List<Float>>()
+        if(exerciseTemplate.containsWeight) {
+            summaryHashMap["Total weight"] = 0f
+            graphInfoHashMap["Total weight"] = mutableListOf()
+        }
+        if(exerciseTemplate.containsDuration) {
+            summaryHashMap["Total duration"] = 0f
+            graphInfoHashMap["Total duration"] = mutableListOf()
+        }
+        if(exerciseTemplate.containsDistance) {
+            summaryHashMap["Total distance"] = 0f
+            graphInfoHashMap["Total distance"] = mutableListOf()
+        }
+
+
+        val sdf = SimpleDateFormat("ddMMyyyy", Locale.getDefault())
+        val currentDate = sdf.format(Date())
 
         for(training in trainingSet) {
-            for (musclePart in training.musclePartMap) {
-                if(musclePart.key == exerciseTemplate.musclePart) {
-                    for (exerciseInTraining in musclePart.value) {
-                        if(exerciseInTraining.id == exerciseTemplate.id) {
-                            if(exerciseTemplate.containsWeight) {
-                                for (series in exerciseInTraining.listOfSeries) {
-                                    summaryHashMap["Total weight"] =
-                                        summaryHashMap["Total weight"]!! + series.weight!!
+            if(calculateDaysBetweenDates(currentDate, training.date) <= selectedDateRange) {
+                for (musclePart in training.musclePartMap) {
+                    if(musclePart.key == exerciseTemplate.musclePart) {
+                        for (exerciseInTraining in musclePart.value) {
+                            if(exerciseInTraining.id == exerciseTemplate.id) {
+                                if(exerciseTemplate.containsWeight) {
+                                    for (series in exerciseInTraining.listOfSeries) {
+                                        var toAdd = series.weight!!
+                                        if(exerciseTemplate.containsReps) {
+                                            toAdd *= series.reps!!
+                                        }
+                                        summaryHashMap["Total weight"] =
+                                            summaryHashMap["Total weight"]!! + toAdd
+                                    }
                                 }
-                            }
-                            if(exerciseTemplate.containsDuration) {
-                                for (series in exerciseInTraining.listOfSeries) {
-                                    summaryHashMap["Total duration"] =
-                                        summaryHashMap["Total duration"]!! + series.duration!!
+                                if(exerciseTemplate.containsDuration) {
+                                    for (series in exerciseInTraining.listOfSeries) {
+                                        var toAdd = series.duration!!
+                                        if(exerciseTemplate.containsReps) {
+                                            toAdd *= series.reps!!
+                                        }
+                                        summaryHashMap["Total duration"] =
+                                            summaryHashMap["Total duration"]!! + toAdd
+                                    }
                                 }
-                            }
-                            if(exerciseTemplate.containsDistance) {
-                                for (series in exerciseInTraining.listOfSeries) {
-                                    summaryHashMap["Total distance"] =
-                                        summaryHashMap["Total distance"]!! + series.distance!!
+                                if(exerciseTemplate.containsDistance) {
+                                    for (series in exerciseInTraining.listOfSeries) {
+                                        var toAdd = series.distance!!
+                                        if(exerciseTemplate.containsReps) {
+                                            toAdd *= series.reps!!
+                                        }
+                                        summaryHashMap["Total distance"] =
+                                            summaryHashMap["Total distance"]!! + toAdd
+                                    }
                                 }
                             }
                         }
@@ -267,5 +332,29 @@ class TrainingsSummaryActivity : AppCompatActivity() {
             "Average speed" -> getString(R.string.average_speed)
             else -> summary
         }
+    }
+
+    private fun calculateDaysBetweenDates(currentDateUnformatted: String,
+                                          trainingDateUnformatted: String): Long {
+        val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+
+        val currentDay = currentDateUnformatted.substring(0, 2)
+        val currentMonth = currentDateUnformatted.substring(2, 4)
+        val currentYear = currentDateUnformatted.substring(4, 8)
+        val currentDateFormatted = "$currentDay.$currentMonth.$currentYear"
+        val currentDate = sdf.parse(currentDateFormatted)
+
+        val trainingDay = trainingDateUnformatted.substring(0, 2)
+        val trainingMonth = trainingDateUnformatted.substring(2, 4)
+        val trainingYear = trainingDateUnformatted.substring(4, 8)
+        val trainingDateFormatted = "$trainingDay.$trainingMonth.$trainingYear"
+        val trainingDate = sdf.parse(trainingDateFormatted)
+
+        val diff: Long = (currentDate?.time ?: 0) - (trainingDate?.time ?: 0)
+        toast("Range: $selectedDateRange, current: $currentDateFormatted\n" +
+                " training: $trainingDateFormatted, diff : " +
+                "${TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)}\n" +
+                "currentDate: $currentDate, trainingDate: $trainingDate")
+        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
     }
 }

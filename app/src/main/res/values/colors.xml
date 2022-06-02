@@ -26,5 +26,6 @@
     <color name="primaryLayoutText">#C7DEFF</color>
     <color name="secondaryLayoutText">#C1C1C1</color>
     <color name="minorLayoutText">#BAA7A7</color>
-    <color name="addPrimaryLayoutText">#9FBDB8</color>
+    <color name="addPrimaryLayoutText">#A0BD9F</color>
+    <color name="deletePrimaryLayoutText">#BD9F9F</color>
 </resources>

@@ -59,13 +59,6 @@ class UserTrainingsActivity : AppCompatActivity() {
                 else {
                     trainingsIdSetIterator -= 1
                 }
-                /*for(training in trainingsDataSet) {
-                    for (musclePart in training.musclePartMap.values) {
-                        for (exercise in musclePart) {
-                            exercise.isAddNewSeriesActive = false
-                        }
-                    }
-                }*/
                 updateTrainingView(trainingsIdsSet.elementAt(trainingsIdSetIterator))
             }
         }
@@ -405,7 +398,7 @@ class UserTrainingsActivity : AppCompatActivity() {
 
                         val deleteExerciseTV1 = TextView(this)
                         deleteExerciseTV1.text = "(" + getString(R.string.delete)
-                        deleteExerciseTV1.setTextColor(resources.getColor(R.color.addPrimaryLayoutText))
+                        deleteExerciseTV1.setTextColor(resources.getColor(R.color.deletePrimaryLayoutText))
                         deleteExerciseTV1.textSize = resources.getDimension(R.dimen.trainingSmallFontSize)
                         deleteExerciseTV1.gravity = Gravity.END
                         deleteExerciseTV1.layoutParams = seriesLayoutParams
@@ -416,7 +409,7 @@ class UserTrainingsActivity : AppCompatActivity() {
                         }
                         val deleteExerciseTV2 = TextView(this)
                         deleteExerciseTV2.text = getString(R.string.exercise_no_capitalize) + ")"
-                        deleteExerciseTV2.setTextColor(resources.getColor(R.color.addPrimaryLayoutText))
+                        deleteExerciseTV2.setTextColor(resources.getColor(R.color.deletePrimaryLayoutText))
                         deleteExerciseTV2.textSize = resources.getDimension(R.dimen.trainingSmallFontSize)
                         deleteExerciseTV2.gravity = Gravity.START
                         deleteExerciseTV2.layoutParams = seriesLayoutParams
@@ -471,7 +464,7 @@ class UserTrainingsActivity : AppCompatActivity() {
                             listOfValuesLL.addView(copyTV)
                             val deleteTV = TextView(this)
                             deleteTV.text = "(" + getString(R.string.delete) + ")"
-                            deleteTV.setTextColor(resources.getColor(R.color.addPrimaryLayoutText))
+                            deleteTV.setTextColor(resources.getColor(R.color.deletePrimaryLayoutText))
                             deleteTV.textSize = resources.getDimension(R.dimen.trainingSmallFontSize)
                             deleteTV.gravity = Gravity.CENTER
                             deleteTV.layoutParams = seriesTVLayoutParams

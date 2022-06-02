@@ -9,5 +9,5 @@
     <dimen name="trainingLargeFontSize">10sp</dimen>
     <dimen name="trainingBigFontSize">8sp</dimen>
     <dimen name="trainingMediumFontSize">7sp</dimen>
-    <dimen name="trainingSmallFontSize">6sp</dimen>
+    <dimen name="trainingSmallFontSize">5sp</dimen>
 </resources>

@@ -12,44 +12,40 @@
         android:id="@+id/textViewChooseMusclePart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="@string/choose_muscle_part"
+        android:layout_marginTop="30dp"
+        android:text="@string/choose_muscle_part_and_exercise"
         android:textColor="@color/white"
         android:textSize="@dimen/primaryTitleFontSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewExerciseSummary" />
 
-    <TextView
-        android:id="@+id/textViewChooseExercise"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="@string/choose_exercise"
-        android:textColor="@color/white"
-        android:textSize="@dimen/primaryTitleFontSize"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerChooseMusclePart" />
-
     <Spinner
         android:id="@+id/spinnerChooseExcercise"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewChooseExercise" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerChooseMusclePart" />
 
     <Spinner
         android:id="@+id/spinnerChooseMusclePart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewChooseMusclePart" />
+
+    <Spinner
+        android:id="@+id/spinnerChooseDates"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerChooseExcercise" />
 
     <Button
         android:id="@+id/buttonBackFromSummary"
@@ -85,7 +81,7 @@
         app:layout_constraintBottom_toTopOf="@+id/buttonBackFromSummary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerChooseExcercise">
+        app:layout_constraintTop_toBottomOf="@+id/spinnerChooseDates">
 
         <LinearLayout
             android:id="@+id/linearLayoutSummary"
