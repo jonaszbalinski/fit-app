@@ -1,9 +1,9 @@
 package com.judi.fitappka
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
-import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
 import android.widget.AdapterView
@@ -11,21 +11,26 @@ import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
+import com.jjoe64.graphview.GraphView
+import com.jjoe64.graphview.series.DataPoint
+import com.jjoe64.graphview.series.LineGraphSeries
 import com.judi.fitappka.databinding.ActivityTrainingsSummaryBinding
-import extensions.DataPoint
 import extensions.Extensions.toast
-import extensions.SimpleGraphView
+import extensions.OnSwipeTouchListener
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+
 
 class TrainingsSummaryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTrainingsSummaryBinding
     private lateinit var exerciseTemplateReference: DatabaseReference
     private lateinit var trainingsDataReference: DatabaseReference
+    private lateinit var onGraphSwipeTouchListener: OnSwipeTouchListener
 
     var exerciseTemplateSet: MutableSet<ExerciseTemplate> = mutableSetOf()
     var trainingsDataSet: MutableSet<Training> = mutableSetOf()
@@ -34,6 +39,9 @@ class TrainingsSummaryActivity : AppCompatActivity() {
     var selectedDateRange = 7
     var selectedExerciseTemplate: ExerciseTemplate? = null
 
+    var listOfGraphSeries: MutableMap<String, LineGraphSeries<DataPoint>> = mutableMapOf()
+    var listOfGraphSeriesIterator = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTrainingsSummaryBinding.inflate(layoutInflater)
@@ -41,6 +49,43 @@ class TrainingsSummaryActivity : AppCompatActivity() {
 
         val activityContext = this
         val userUID = Firebase.auth.currentUser?.uid.toString()
+
+        onGraphSwipeTouchListener = object : OnSwipeTouchListener(activityContext) {
+            override fun onSwipeLeft() {
+                listOfGraphSeriesIterator++
+                if(listOfGraphSeriesIterator >= listOfGraphSeries.size) {
+                    listOfGraphSeriesIterator = 0
+                }
+                for (child in binding.linearLayoutSummary.children) {
+                    if(child !is GraphView) binding.linearLayoutSummary.removeView(child)
+                }
+                binding.graph.removeAllSeries()
+                binding.graph.addSeries(listOfGraphSeries.values.toList()[listOfGraphSeriesIterator])
+                val textView = TextView(activityContext)
+                textView.text = decodeSummary(listOfGraphSeries.keys.toList()[listOfGraphSeriesIterator])
+                textView.gravity = Gravity.CENTER
+                textView.setTextColor(Color.WHITE)
+                binding.linearLayoutSummary.addView(textView, 0)
+            }
+            override fun onSwipeRight() {
+                listOfGraphSeriesIterator--
+                if(listOfGraphSeriesIterator < 0) {
+                    listOfGraphSeriesIterator = listOfGraphSeries.size - 1
+                }
+                for (child in binding.linearLayoutSummary.children) {
+                    if(child !is GraphView) binding.linearLayoutSummary.removeView(child)
+                }
+                binding.graph.removeAllSeries()
+                binding.graph.addSeries(listOfGraphSeries.values.toList()[listOfGraphSeriesIterator])
+                val textView = TextView(activityContext)
+                textView.text = decodeSummary(listOfGraphSeries.keys.toList()[listOfGraphSeriesIterator])
+                textView.gravity = Gravity.CENTER
+                textView.setTextColor(Color.WHITE)
+                binding.linearLayoutSummary.addView(textView, 0)
+            }
+        }
+
+        binding.graph.setOnTouchListener(onGraphSwipeTouchListener)
 
         exerciseTemplateReference = FirebaseDatabase.getInstance()
             .getReference("Test/TestExercises") //should be "exercise templates" in db
@@ -54,6 +99,7 @@ class TrainingsSummaryActivity : AppCompatActivity() {
 
         val musclePartListAdapter = ArrayAdapter<String>(this,
             android.R.layout.simple_spinner_dropdown_item)
+
 
         exerciseTemplateReference.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -82,7 +128,7 @@ class TrainingsSummaryActivity : AppCompatActivity() {
                     updateTrainingList(snapshot)
                     binding.spinnerChooseMusclePart.adapter = musclePartListAdapter
                     binding.spinnerChooseMusclePart.setSelection(selectedMusclePartId)
-                }, 200)
+                }, 150)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -121,7 +167,7 @@ class TrainingsSummaryActivity : AppCompatActivity() {
                                 binding.spinnerChooseExcercise.selectedItem.toString()) {
                                 selectedExerciseTemplate = exerciseTemplate
                                 calculateExerciseSummary(exerciseTemplate, trainingsDataSet)
-                                }
+                            }
                         }
                     }
                 }
@@ -296,10 +342,12 @@ class TrainingsSummaryActivity : AppCompatActivity() {
             binding.linearLayoutSummary)
     }
 
-    fun addExerciseSummaryInfoToLayout(summary: MutableMap<String, Float>,
-                                       graphPoints: MutableMap<String, List<Float>>,
-                                       layout: LinearLayout) {
-        layout.removeAllViews()
+    private fun addExerciseSummaryInfoToLayout(summary: MutableMap<String, Float>,
+                                               graphPoints: MutableMap<String, List<Float>>,
+                                               layout: LinearLayout) {
+        for (child in layout.children) {
+            if(child !is GraphView) layout.removeView(child)
+        }
 
         val layoutParams = LinearLayout
             .LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -330,43 +378,39 @@ class TrainingsSummaryActivity : AppCompatActivity() {
 
             horizontalLL.addView(textViewKey)
             horizontalLL.addView(textViewValue)
-            layout.addView(horizontalLL)
+            //layout.addView(horizontalLL)
         }
 
-        drawGraphSummary(graphPoints, binding.linearLayoutSummary)
+        drawGraphSummary(graphPoints)
     }
 
-    private fun drawGraphSummary(graphPoints: MutableMap<String, List<Float>>,
-                                 layout: LinearLayout) {
-        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.MATCH_PARENT)
-        val graphView = SimpleGraphView(this)
-        graphView.layoutParams = layoutParams
-        val dataPointList = mutableListOf<DataPoint>()
-        /*
-        for (i in 0 until graphPoints.values.first().size) {
-            val dataPoint = DataPoint(i, (graphPoints.values.first()[i]).toInt())
-            dataPointList.add(dataPoint)
+    private fun drawGraphSummary(graphPoints: MutableMap<String, List<Float>>) {
+        binding.graph.removeAllSeries()
+        listOfGraphSeries.clear()
+        listOfGraphSeriesIterator = 0
+
+        for (pair in graphPoints) {
+            val series = LineGraphSeries<DataPoint>()
+            for (i in 0 until pair.value.size) {
+                series.appendData(DataPoint(i.toDouble(), pair.value[i].toDouble()),
+                    true, pair.value.size)
+            }
+
+            series.isDrawDataPoints = true
+            series.dataPointsRadius = 10f
+            series.color = Color.GREEN
+            series.thickness = 5
+            series.title = decodeSummary(pair.key)
+
+            listOfGraphSeries[pair.key] = series
         }
-        */
 
-        for (i in 0 until 100) {
-            val dataPoint = DataPoint(i, i*i)
-            dataPointList.add(dataPoint)
-        }
-
-        graphView.setData(dataPointList)
-        layout.addView(graphView)
-
+        binding.graph.addSeries(listOfGraphSeries.values.toList()[listOfGraphSeriesIterator])
         val textView = TextView(this)
-        textView.text = "..."
-        textView.textSize = resources.getDimension(R.dimen.trainingMediumFontSize)
+        textView.text = decodeSummary(listOfGraphSeries.keys.toList()[listOfGraphSeriesIterator])
         textView.gravity = Gravity.CENTER
-        textView.setPadding(5, 10, 5, 15)
-        textView.setTextColor(resources
-            .getColor(R.color.primaryLayoutText))
-        layout.addView(textView)
-
+        textView.setTextColor(Color.WHITE)
+        binding.linearLayoutSummary.addView(textView, 0)
     }
 
 
